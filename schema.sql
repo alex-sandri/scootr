@@ -35,7 +35,7 @@ create table "portafogli"
 
     unique ("utente"),
 
-    foreign key ("utente") references "utenti" on update cascade on delete cascade
+    foreign key ("utente") references "utenti" on update cascade on delete cascade,
 
     check ("credito" >= 0)
 );
@@ -76,7 +76,7 @@ create table "corse"
     primary key ("id"),
 
     foreign key ("utente") references "utenti" on update cascade on delete cascade,
-    foreign key ("mezzo") references "mezzi" on update cascade on delete cascade
+    foreign key ("mezzo") references "mezzi" on update cascade on delete cascade,
 
     check ("orario_partenza" <= "orario_arrivo")
 );
