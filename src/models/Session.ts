@@ -130,5 +130,8 @@ export class Session
             user: User.SCHEMA.OBJ.required(),
             expires_at: Schema.DATETIME.required(),
         }),
+        CREATE: Joi.object({
+            email: Schema.EMAIL.required(),
+        }),
     } as const;
 }
