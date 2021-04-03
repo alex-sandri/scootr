@@ -23,7 +23,8 @@ create table "utenti"
     unique ("email"),
     unique ("codice_fiscale"),
 
-    check ("data_nascita" < current_date)
+    check ("data_nascita" < current_date),
+    check ("codice_fiscale" = upper("codice_fiscale"))
 );
 
 create table "portafogli"
