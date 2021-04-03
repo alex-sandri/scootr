@@ -104,6 +104,17 @@ export class Utente
         return Utente.deserializza(result.rows[0]);
     }
 
+    public static async ottieni(id: string): Promise<Utente>
+    {
+        const result = await Database.pool
+            .query(
+                `select * from "utenti" where "id" = $1`,
+                [ id ],
+            );
+
+        return Utente.deserializza(result.rows[0]);
+    }
+
     public async elimina(): Promise<void>
     {
         const client = await Database.pool.connect();
