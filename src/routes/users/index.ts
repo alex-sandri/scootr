@@ -30,7 +30,7 @@ export default <ServerRoute[]>[
         },
         handler: async (request, h) =>
         {
-            const user = await User.crea(request.payload as any);
+            const user = await User.create(request.payload as any);
 
             return user.serialize();
         },

@@ -64,7 +64,7 @@ export class User
     // CRUD //
     //////////
 
-    public static async crea(data: ICreateUser): Promise<User>
+    public static async create(data: ICreateUser): Promise<User>
     {
         if (differenceInYears(new Date(), data.birth_date) < Config.USER_MIN_AGE)
         {
