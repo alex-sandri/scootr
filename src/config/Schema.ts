@@ -14,5 +14,5 @@ export class Schema
     public static readonly DATE = Joi.date().utc().format("YYYY-MM-DD");
     public static readonly DATETIME = Joi.date().utc().format("YYYY-MM-DDTHH:mm:ss.SSSZ");
 
-    public static readonly CODICE_FISCALE = Schema.STRING.uppercase().pattern(/^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z]{0-9}{3}[A-Z]$/);
+    public static readonly CODICE_FISCALE = Schema.STRING.uppercase().pattern(/^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$/);
 }
