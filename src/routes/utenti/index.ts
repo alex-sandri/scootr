@@ -36,6 +36,7 @@ export default <ServerRoute[]>[
                 params: Joi.object({
                     id: Schema.ID.UTENTE.required(),
                 }),
+                payload: Joi,
             },
         },
         handler: async (request, h) =>

@@ -1,6 +1,8 @@
 import Boom from "@hapi/boom";
 import { differenceInYears } from "date-fns";
+import Joi from "joi";
 import { Config } from "../config/Config";
+import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
 import { Utilities } from "../utilities/Utilities";
 
@@ -52,6 +54,10 @@ export class Utente
     {
         return this.email;
     }
+
+    //////////
+    // CRUD //
+    //////////
 
     public static async crea(data: ICreaUtente): Promise<Utente>
     {
@@ -156,6 +162,10 @@ export class Utente
         client.release();
     }
 
+    ///////////////////
+    // SERIALIZATION //
+    ///////////////////
+
     public serializza(): IUtenteSerializzato
     {
         return {
@@ -180,4 +190,21 @@ export class Utente
             data.stripe_customer_id,
         );
     }
+
+    /////////////
+    // SCHEMAS //
+    /////////////
+
+    public static readonly SCHEMA = {
+        CREATE: Joi.object({
+            nome: Schema.STRING.required(),
+            cognome: Schema.STRING.required(),
+            email: Schema.EMAIL.required(),
+            data_nascita: Schema.DATE.required(),
+            codice_fiscale: Schema.CODICE_FISCALE.required(),
+        }),
+        UPDATE: Joi.object({
+            email: Schema.EMAIL.optional(),
+        }),
+    } as const;
 }
