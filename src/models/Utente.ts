@@ -24,6 +24,16 @@ interface ICreaUtente
     codice_fiscale: string,
 }
 
+export interface IUtenteSerializzato
+{
+    id: string,
+    nome: string,
+    cognome: string,
+    email: string,
+    data_nascita: string,
+    codice_fiscale: string,
+}
+
 export class Utente
 {
     private constructor
@@ -144,6 +154,18 @@ export class Utente
         await client.query("commit");
 
         client.release();
+    }
+
+    public serializza(): IUtenteSerializzato
+    {
+        return {
+            id: this.id,
+            nome: this.nome,
+            cognome: this.cognome,
+            email: this.email,
+            data_nascita: this.data_nascita.toISOString(),
+            codice_fiscale: this.codice_fiscale,
+        };
     }
 
     private static deserializza(data: IDatabaseUtente): Utente
