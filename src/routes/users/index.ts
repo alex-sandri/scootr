@@ -14,6 +14,9 @@ export default <ServerRoute[]>[
                     id: Schema.ID.USER.required(),
                 }),
             },
+            response: {
+                schema: User.SCHEMA.OBJ,
+            },
         },
         handler: async (request, h) =>
         {
@@ -26,6 +29,9 @@ export default <ServerRoute[]>[
         options: {
             validate: {
                 payload: User.SCHEMA.CREATE,
+            },
+            response: {
+                schema: User.SCHEMA.OBJ,
             },
         },
         handler: async (request, h) =>
@@ -44,6 +50,9 @@ export default <ServerRoute[]>[
                     id: Schema.ID.USER.required(),
                 }),
                 payload: User.SCHEMA.UPDATE,
+            },
+            response: {
+                schema: User.SCHEMA.OBJ,
             },
         },
         handler: async (request, h) =>
