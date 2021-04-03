@@ -33,4 +33,13 @@ export class Config
     } as const;
 
     public static readonly STRIPE = new Stripe(process.env.STRIPE_SECRET_API_KEY ?? "", { apiVersion: "2020-08-27" });
+
+    public static readonly API_HOST = Config.IS_PRODUCTION
+        ? "https://api.example.com"
+        : `http://localhost:${process.env.PORT}`;
+
+    public static readonly CLIENT_HOST = Config.IS_PRODUCTION
+        ? "https://example.com"
+        : "https://localhost:4200";
+
 }
