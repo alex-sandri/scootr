@@ -34,7 +34,7 @@ export class Session
     // CRUD //
     //////////
 
-    public static async crea(user: User): Promise<Session>
+    public static async create(user: User): Promise<Session>
     {
         const expires = new Date();
         expires.setSeconds(new Date().getSeconds() + Config.SESSION_DURATION);
