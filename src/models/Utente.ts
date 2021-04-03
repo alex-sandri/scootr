@@ -52,7 +52,7 @@ export class Utente
 
     public get email(): string
     {
-        return this.email;
+        return this._email;
     }
 
     //////////
