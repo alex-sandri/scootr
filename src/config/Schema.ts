@@ -1,5 +1,7 @@
-import Joi from "joi";
+import BaseJoi from "joi";
 import JoiDate from "@joi/date";
+
+const Joi = BaseJoi.extend(JoiDate) as BaseJoi.Root;
 
 export class Schema
 {
@@ -9,8 +11,8 @@ export class Schema
 
     public static readonly EMAIL = Schema.STRING.email();
 
-    public static readonly DATE = Joi.extend(JoiDate); // TODO
-    public static readonly DATETIME = Joi; // TODO
+    public static readonly DATE = Joi.date().utc().format("YYYY-MM-DD");
+    public static readonly DATETIME = Joi.date().utc().format("YYYY-MM-DDTHH:mm:ss.SSSZ");
 
     public static readonly CODICE_FISCALE = Joi; // TODO
 }
