@@ -8,12 +8,13 @@ import Database from "./utilities/Database";
 import { ValidationError } from "joi";
 import Boom from "@hapi/boom";
 import { Session } from "./models/Session";
+import { Config } from "./config/Config";
 
 const server = new Hapi.Server({
     port: process.env.PORT,
     routes: {
         cors: {
-            origin: [ "*" ], // TODO
+            origin: [ Config.CLIENT_HOST ],
         },
         validate: {
             options: {
