@@ -26,6 +26,11 @@ interface ICreaUtente
     codice_fiscale: string,
 }
 
+interface IAggiornaUtente
+{
+    email?: string,
+}
+
 export interface IUtenteSerializzato
 {
     id: string,
@@ -131,6 +136,59 @@ export class Utente
             );
 
         return Utente.deserializza(result.rows[0]);
+    }
+
+    public async aggiorna(data: IAggiornaUtente): Promise<void>
+    {
+        if (!this.stripe_customer_id)
+        {
+            throw Boom.expectationFailed();
+        }
+
+        this._email = data.email ?? this.email;
+
+        const client = await Database.pool.connect();
+
+        await client.query("begin");
+
+        await client
+            .query(
+                `
+                update "utenti"
+                set
+                    "email" = $1
+                where
+                    "id" = $2
+                `,
+                [
+                    this.email,
+                    this.id,
+                ],
+            )
+            .catch(async () =>
+            {
+                await client.query("rollback");
+
+                throw Boom.badRequest();
+            });
+
+        await Config.STRIPE.customers
+            .update(
+                this.stripe_customer_id,
+                {
+                    email: data.email,
+                },
+            )
+            .catch(async () =>
+            {
+                await client.query("rollback");
+
+                throw Boom.badImplementation();
+            });
+
+        await client.query("commit");
+
+        client.release();
     }
 
     public async elimina(): Promise<void>
