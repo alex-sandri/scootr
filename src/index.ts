@@ -7,6 +7,7 @@ import routes from "./routes";
 import Database from "./utilities/Database";
 import { ValidationError } from "joi";
 import Boom from "@hapi/boom";
+import { Session } from "./models/Session";
 
 const server = new Hapi.Server({
     port: process.env.PORT,
