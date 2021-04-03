@@ -50,7 +50,7 @@ create table "users"
 create table "wallets"
 (
     "id" id not null,
-    "user" text not null,
+    "user" id not null,
     "balance" numeric(10, 2) not null,
 
     primary key ("id"),
@@ -68,7 +68,7 @@ create table "payment_methods"
     "id" id not null,
     "type" text not null,
     "data" json not null,
-    "wallet" text not null,
+    "wallet" id not null,
 
     primary key ("id"),
 
@@ -92,8 +92,8 @@ create table "vehicles"
 create table "rides"
 (
     "id" id not null,
-    "user" text not null,
-    "vehicle" text not null,
+    "user" id not null,
+    "vehicle" id not null,
     "start_time" timestamp not null,
     "end_time" timestamp,
     "start_location" geography not null,
