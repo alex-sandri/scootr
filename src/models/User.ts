@@ -197,7 +197,7 @@ export class User
 
         await client.query("begin");
 
-        await Database.pool
+        await client
             .query(
                 `delete from "users" where "id" = $1`,
                 [ this.id, ],
