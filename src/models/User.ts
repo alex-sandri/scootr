@@ -224,7 +224,7 @@ export class User
     // SERIALIZATION //
     ///////////////////
 
-    public serializza(): ISerializedUser
+    public serialize(): ISerializedUser
     {
         return {
             id: this.id,

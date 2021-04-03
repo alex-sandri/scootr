@@ -32,7 +32,7 @@ export default <ServerRoute[]>[
         {
             const user = await User.crea(request.payload as any);
 
-            return user.serializza();
+            return user.serialize();
         },
     },
     {
