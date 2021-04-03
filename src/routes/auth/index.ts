@@ -122,16 +122,7 @@ export default <ServerRoute[]>[
         {
             const { email } = request.payload as any;
 
-            let user: User;
-
-            if (await User.exists(email))
-            {
-                user = await User.retrieveWithEmail(email);
-            }
-            else
-            {
-                user = await User.create({ email });
-            }
+            const user = await User.retrieveWithEmail(email);
 
             const id = Utilities.id(Config.ID_PREFIXES.SIGN_IN_REQUEST);
 

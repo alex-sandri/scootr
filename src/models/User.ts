@@ -225,6 +225,26 @@ export class User
         client.release();
     }
 
+    ///////////////
+    // UTILITIES //
+    ///////////////
+
+    public static async retrieveWithEmail(email: string): Promise<User>
+    {
+        const result = await Database.pool
+            .query(
+                `select * from "users" where "email" = $1`,
+                [ email ],
+            );
+
+        if (result.rowCount === 0)
+        {
+            throw Boom.notFound();
+        }
+
+        return User.deserialize(result.rows[0]);
+    }
+
     ///////////////////
     // SERIALIZATION //
     ///////////////////
