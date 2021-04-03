@@ -16,7 +16,7 @@ create table "utenti"
     "email" varchar(320) not null,
     "data_nascita" date not null,
     "codice_fiscale" char(16) not null,
-    "stripe_customer_id" text not null,
+    "stripe_customer_id" text,
 
     primary key ("id"),
 
