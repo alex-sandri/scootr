@@ -17,4 +17,41 @@ export default <ServerRoute[]>[
         handler: async (request, h) =>
         {},
     },
+    {
+        method: "POST",
+        path: "/utenti",
+        options: {
+            validate: {
+                payload: Joi,
+            },
+        },
+        handler: async (request, h) =>
+        {},
+    },
+    {
+        method: "PATCH",
+        path: "/utenti/{id}",
+        options: {
+            validate: {
+                params: Joi.object({
+                    id: Schema.ID.UTENTE.required(),
+                }),
+            },
+        },
+        handler: async (request, h) =>
+        {},
+    },
+    {
+        method: "DELETE",
+        path: "/utenti/{id}",
+        options: {
+            validate: {
+                params: Joi.object({
+                    id: Schema.ID.UTENTE.required(),
+                }),
+            },
+        },
+        handler: async (request, h) =>
+        {},
+    },
 ];
