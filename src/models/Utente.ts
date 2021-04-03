@@ -106,15 +106,31 @@ export class Utente
 
     public async elimina(): Promise<void>
     {
+        const client = await Database.pool.connect();
+
+        await client.query("begin");
+
         await Database.pool
             .query(
                 `delete from "utenti" where "id" = $1`,
                 [ this.id, ],
-            )
-            .catch(() =>
-            {
-                throw Boom.badImplementation();
-            });
+            );
+
+        if (this.stripe_customer_id)
+        {
+            await Config.STRIPE.customers
+                .del(this.stripe_customer_id)
+                .catch(async () =>
+                {
+                    await client.query("rollback");
+    
+                    throw Boom.badImplementation();
+                });
+        }
+
+        await client.query("commit");
+
+        client.release();
     }
 
     private static deserializza(data: IDatabaseUtente): Utente
