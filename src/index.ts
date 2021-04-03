@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import Boom from "@hapi/boom";
 import Hapi from "@hapi/hapi";
 import routes from "./routes";
 import Database from "./utilities/Database";
