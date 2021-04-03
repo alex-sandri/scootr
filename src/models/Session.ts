@@ -126,7 +126,7 @@ export class Session
 
     public static readonly SCHEMA = {
         OBJ: Joi.object({
-            id: Schema.ID.USER.required(),
+            id: Schema.ID.SESSION.required(),
             user: User.SCHEMA.OBJ.required(),
             expires_at: Schema.DATETIME.required(),
         }),

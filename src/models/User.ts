@@ -259,6 +259,14 @@ export class User
     /////////////
 
     public static readonly SCHEMA = {
+        OBJ: Joi.object({
+            id: Schema.ID.USER.required(),
+            first_name: Schema.STRING.required(),
+            last_name: Schema.STRING.required(),
+            email: Schema.EMAIL.required(),
+            birth_date: Schema.DATE.max("now").required(),
+            fiscal_number: Schema.FISCAL_NUMBER.required(),
+        }),
         CREATE: Joi.object({
             first_name: Schema.STRING.required(),
             last_name: Schema.STRING.required(),
