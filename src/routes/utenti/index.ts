@@ -16,7 +16,9 @@ export default <ServerRoute[]>[
             },
         },
         handler: async (request, h) =>
-        {},
+        {
+            throw Boom.notImplemented();
+        },
     },
     {
         method: "POST",
@@ -45,7 +47,9 @@ export default <ServerRoute[]>[
             },
         },
         handler: async (request, h) =>
-        {},
+        {
+            throw Boom.notImplemented();
+        },
     },
     {
         method: "DELETE",
@@ -58,6 +62,8 @@ export default <ServerRoute[]>[
             },
         },
         handler: async (request, h) =>
-        {},
+        {
+            throw Boom.notImplemented();
+        },
     },
 ];
