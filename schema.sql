@@ -1,12 +1,12 @@
 ----------------
--- ESTENSIONI --
+-- EXTENSIONS --
 ----------------
 
 create extension "postgis";
 
-------------
--- DOMINI --
-------------
+-------------
+-- DOMAINS --
+-------------
 
 /*
     An id is made up of three parts:
@@ -22,87 +22,88 @@ create domain "id" as text check(value like '___\_%');
 */
 create domain "email_address" as varchar(320);
 
--------------
--- TABELLE --
--------------
+create domain "fiscal_number" as char(16) check (value = upper(value));
 
-create table "utenti"
+------------
+-- TABLES --
+------------
+
+create table "users"
 (
     "id" id not null,
-    "nome" text not null,
-    "cognome" text not null,
+    "first_name" text not null,
+    "last_name" text not null,
     "email" email_address not null,
-    "data_nascita" date not null,
-    "codice_fiscale" char(16) not null,
+    "birth_date" date not null,
+    "fiscal_number" fiscal_number not null,
     "stripe_customer_id" text,
 
     primary key ("id"),
 
     unique ("email"),
-    unique ("codice_fiscale"),
+    unique ("fiscal_number"),
 
     check ("id" like 'usr_%'),
-    check ("data_nascita" < current_date),
-    check ("codice_fiscale" = upper("codice_fiscale"))
+    check ("birth_date" < current_date)
 );
 
-create table "portafogli"
+create table "wallets"
 (
     "id" id not null,
-    "utente" text not null,
-    "credito" numeric(10, 2) not null,
+    "user" text not null,
+    "balance" numeric(10, 2) not null,
 
     primary key ("id"),
 
-    unique ("utente"),
+    unique ("user"),
 
-    foreign key ("utente") references "utenti" on update cascade on delete cascade,
+    foreign key ("user") references "users" on update cascade on delete cascade,
 
     check ("id" like 'wlt_%'),
-    check ("credito" >= 0)
+    check ("balance" >= 0)
 );
 
-create table "metodi_pagamento"
+create table "payment_methods"
 (
     "id" id not null,
-    "tipo" text not null,
-    "dati" json not null,
-    "portafoglio" text not null,
+    "type" text not null,
+    "data" json not null,
+    "wallet" text not null,
 
     primary key ("id"),
 
-    foreign key ("portafoglio") references "portafogli" on update cascade on delete cascade,
+    foreign key ("wallet") references "wallets" on update cascade on delete cascade,
 
     check ("id" like 'pmt_%')
 );
 
-create table "mezzi"
+create table "vehicles"
 (
     "id" id not null,
-    "livello_batteria" int not null,
-    "posizione" geography not null,
+    "battery_level" int not null,
+    "location" geography not null,
 
     primary key ("id"),
 
     check ("id" like 'vcl_%'),
-    check ("livello_batteria" between 0 and 100)
+    check ("battery_level" between 0 and 100)
 );
 
-create table "corse"
+create table "rides"
 (
     "id" id not null,
-    "utente" text not null,
-    "mezzo" text not null,
-    "orario_partenza" timestamp not null,
-    "orario_arrivo" timestamp,
-    "posizione_partenza" geography not null,
-    "posizione_arrivo" geography,
+    "user" text not null,
+    "vehicle" text not null,
+    "start_time" timestamp not null,
+    "end_time" timestamp,
+    "start_location" geography not null,
+    "end_location" geography,
 
     primary key ("id"),
 
-    foreign key ("utente") references "utenti" on update cascade on delete cascade,
-    foreign key ("mezzo") references "mezzi" on update cascade on delete cascade,
+    foreign key ("user") references "users" on update cascade on delete cascade,
+    foreign key ("vehicle") references "vehicles" on update cascade on delete cascade,
 
     check ("id" like 'rid_%'),
-    check ("orario_partenza" <= "orario_arrivo")
+    check ("start_time" <= "end_time")
 );

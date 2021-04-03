@@ -6,51 +6,51 @@ import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
 import { Utilities } from "../utilities/Utilities";
 
-interface IDatabaseUtente
+interface IDatabaseUser
 {
     id: string,
-    nome: string,
-    cognome: string,
+    first_name: string,
+    last_name: string,
     email: string,
-    data_nascita: Date,
-    codice_fiscale: string,
+    birth_date: Date,
+    fiscal_number: string,
     stripe_customer_id: string | null,
 }
 
-interface ICreaUtente
+interface ICreateUser
 {
-    nome: string,
-    cognome: string,
+    first_name: string,
+    last_name: string,
     email: string,
-    data_nascita: Date,
-    codice_fiscale: string,
+    birth_date: Date,
+    fiscal_number: string,
 }
 
-interface IAggiornaUtente
+interface IUpdateUser
 {
     email?: string,
 }
 
-export interface IUtenteSerializzato
+export interface ISerializedUser
 {
     id: string,
-    nome: string,
-    cognome: string,
+    first_name: string,
+    last_name: string,
     email: string,
-    data_nascita: string,
-    codice_fiscale: string,
+    birth_date: string,
+    fiscal_number: string,
 }
 
-export class Utente
+export class User
 {
     private constructor
     (
         public readonly id: string,
-        public readonly nome: string,
-        public readonly cognome: string,
+        public readonly first_name: string,
+        public readonly last_name: string,
         private _email: string,
-        public readonly data_nascita: Date,
-        public readonly codice_fiscale: string,
+        public readonly birth_date: Date,
+        public readonly fiscal_number: string,
         public readonly stripe_customer_id: string | null,
     )
     {}
@@ -64,14 +64,14 @@ export class Utente
     // CRUD //
     //////////
 
-    public static async crea(data: ICreaUtente): Promise<Utente>
+    public static async crea(data: ICreateUser): Promise<User>
     {
-        if (differenceInYears(new Date(), data.data_nascita) < Config.UTENTE_ETA_MINIMA)
+        if (differenceInYears(new Date(), data.birth_date) < Config.USER_MIN_AGE)
         {
             throw Boom.tooEarly(undefined, [
                 {
-                    field: "data_nascita",
-                    error: `Per potersi registrare si deve avere almeno ${Config.UTENTE_ETA_MINIMA} anni compiuti`,
+                    field: "birth_date",
+                    error: `Per potersi registrare si deve avere almeno ${Config.USER_MIN_AGE} anni compiuti`,
                 },
             ]);
         }
@@ -83,19 +83,19 @@ export class Utente
         const result = await client
             .query(
                 `
-                insert into "utenti"
-                    ("id", "nome", "cognome", "email", "data_nascita", "codice_fiscale")
+                insert into "users"
+                    ("id", "first_name", "last_name", "email", "birth_date", "fiscal_number")
                 values
                     ($1, $2, $3, $4, $5, $6)
                 returning *
                 `,
                 [
-                    Utilities.id(Config.PREFISSI_ID.UTENTE),
-                    data.nome,
-                    data.cognome,
+                    Utilities.id(Config.ID_PREFIXES.USER),
+                    data.first_name,
+                    data.last_name,
                     data.email,
-                    data.data_nascita.toISOString(),
-                    data.codice_fiscale,
+                    data.birth_date.toISOString(),
+                    data.fiscal_number,
                 ],
             )
             .catch(async () =>
@@ -107,7 +107,7 @@ export class Utente
 
         await Config.STRIPE.customers
             .create({
-                name: `${data.nome} ${data.cognome}`,
+                name: `${data.first_name} ${data.last_name}`,
                 email: data.email,
                 metadata: {
                     user_id: result.rows[0].id,
@@ -124,21 +124,21 @@ export class Utente
 
         client.release();
 
-        return Utente.deserializza(result.rows[0]);
+        return User.deserialize(result.rows[0]);
     }
 
-    public static async ottieni(id: string): Promise<Utente>
+    public static async retrieve(id: string): Promise<User>
     {
         const result = await Database.pool
             .query(
-                `select * from "utenti" where "id" = $1`,
+                `select * from "users" where "id" = $1`,
                 [ id ],
             );
 
-        return Utente.deserializza(result.rows[0]);
+        return User.deserialize(result.rows[0]);
     }
 
-    public async aggiorna(data: IAggiornaUtente): Promise<void>
+    public async update(data: IUpdateUser): Promise<void>
     {
         if (!this.stripe_customer_id)
         {
@@ -154,7 +154,7 @@ export class Utente
         await client
             .query(
                 `
-                update "utenti"
+                update "users"
                 set
                     "email" = $1
                 where
@@ -191,7 +191,7 @@ export class Utente
         client.release();
     }
 
-    public async elimina(): Promise<void>
+    public async delete(): Promise<void>
     {
         const client = await Database.pool.connect();
 
@@ -199,7 +199,7 @@ export class Utente
 
         await Database.pool
             .query(
-                `delete from "utenti" where "id" = $1`,
+                `delete from "users" where "id" = $1`,
                 [ this.id, ],
             );
 
@@ -224,27 +224,27 @@ export class Utente
     // SERIALIZATION //
     ///////////////////
 
-    public serializza(): IUtenteSerializzato
+    public serializza(): ISerializedUser
     {
         return {
             id: this.id,
-            nome: this.nome,
-            cognome: this.cognome,
+            first_name: this.first_name,
+            last_name: this.last_name,
             email: this.email,
-            data_nascita: this.data_nascita.toISOString(),
-            codice_fiscale: this.codice_fiscale,
+            birth_date: this.birth_date.toISOString(),
+            fiscal_number: this.fiscal_number,
         };
     }
 
-    private static deserializza(data: IDatabaseUtente): Utente
+    private static deserialize(data: IDatabaseUser): User
     {
-        return new Utente(
+        return new User(
             data.id,
-            data.nome,
-            data.cognome,
+            data.first_name,
+            data.last_name,
             data.email,
-            data.data_nascita,
-            data.codice_fiscale,
+            data.birth_date,
+            data.fiscal_number,
             data.stripe_customer_id,
         );
     }
@@ -259,7 +259,7 @@ export class Utente
             cognome: Schema.STRING.required(),
             email: Schema.EMAIL.required(),
             data_nascita: Schema.DATE.max("now").required(),
-            codice_fiscale: Schema.CODICE_FISCALE.required(),
+            codice_fiscale: Schema.FISCAL_NUMBER.required(),
         }),
         UPDATE: Joi.object({
             email: Schema.EMAIL.optional(),

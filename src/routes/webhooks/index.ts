@@ -40,7 +40,7 @@ export default <ServerRoute[]>[
 
                     await Database.pool
                         .query(
-                            `update "utenti" set "stripe_customer_id" = $1 where "id" = $2`,
+                            `update "users" set "stripe_customer_id" = $1 where "id" = $2`,
                             [
                                 customer.id,
                                 customer.metadata.user_id,

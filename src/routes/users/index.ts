@@ -2,16 +2,16 @@ import Boom from "@hapi/boom";
 import { ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
 import { Schema } from "../../config/Schema";
-import { Utente } from "../../models/Utente";
+import { User } from "../../models/User";
 
 export default <ServerRoute[]>[
     {
         method: "GET",
-        path: "/utenti/{id}",
+        path: "/users/{id}",
         options: {
             validate: {
                 params: Joi.object({
-                    id: Schema.ID.UTENTE.required(),
+                    id: Schema.ID.USER.required(),
                 }),
             },
         },
@@ -22,28 +22,28 @@ export default <ServerRoute[]>[
     },
     {
         method: "POST",
-        path: "/utenti",
+        path: "/users",
         options: {
             validate: {
-                payload: Utente.SCHEMA.CREATE,
+                payload: User.SCHEMA.CREATE,
             },
         },
         handler: async (request, h) =>
         {
-            const utente = await Utente.crea(request.payload as any);
+            const user = await User.crea(request.payload as any);
 
-            return utente.serializza();
+            return user.serializza();
         },
     },
     {
         method: "PATCH",
-        path: "/utenti/{id}",
+        path: "/users/{id}",
         options: {
             validate: {
                 params: Joi.object({
-                    id: Schema.ID.UTENTE.required(),
+                    id: Schema.ID.USER.required(),
                 }),
-                payload: Utente.SCHEMA.UPDATE,
+                payload: User.SCHEMA.UPDATE,
             },
         },
         handler: async (request, h) =>
@@ -53,11 +53,11 @@ export default <ServerRoute[]>[
     },
     {
         method: "DELETE",
-        path: "/utenti/{id}",
+        path: "/users/{id}",
         options: {
             validate: {
                 params: Joi.object({
-                    id: Schema.ID.UTENTE.required(),
+                    id: Schema.ID.USER.required(),
                 }),
             },
         },

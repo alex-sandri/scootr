@@ -1,7 +1,7 @@
-import utenti from "./utenti";
+import users from "./users";
 import webhooks from "./webhooks";
 
 export = [
-    utenti,
+    users,
     webhooks,
 ].flat();
