@@ -104,6 +104,19 @@ export class Utente
         return Utente.deserializza(result.rows[0]);
     }
 
+    public async elimina(): Promise<void>
+    {
+        await Database.pool
+            .query(
+                `delete from "utenti" where "id" = $1`,
+                [ this.id, ],
+            )
+            .catch(() =>
+            {
+                throw Boom.badImplementation();
+            });
+    }
+
     private static deserializza(data: IDatabaseUtente): Utente
     {
         return new Utente(
