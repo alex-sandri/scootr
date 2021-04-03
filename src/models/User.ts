@@ -135,6 +135,11 @@ export class User
                 [ id ],
             );
 
+        if (result.rowCount === 0)
+        {
+            throw Boom.notFound();
+        }
+
         return User.deserialize(result.rows[0]);
     }
 
