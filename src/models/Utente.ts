@@ -12,6 +12,7 @@ interface IDatabaseUtente
     email: string,
     data_nascita: Date,
     codice_fiscale: string,
+    stripe_customer_id: string | null,
 }
 
 interface ICreaUtente
@@ -33,6 +34,7 @@ export class Utente
         private _email: string,
         public readonly data_nascita: Date,
         public readonly codice_fiscale: string,
+        public readonly stripe_customer_id: string | null,
     )
     {}
 
@@ -153,6 +155,7 @@ export class Utente
             data.email,
             data.data_nascita,
             data.codice_fiscale,
+            data.stripe_customer_id,
         );
     }
 }
