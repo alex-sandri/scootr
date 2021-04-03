@@ -2,7 +2,7 @@ import Boom from "@hapi/boom";
 import Hapi from "@hapi/hapi";
 
 const server = new Hapi.Server({
-    port: 4000,
+    port: process.env.PORT,
 });
 
 const init = async () =>
