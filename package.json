@@ -20,6 +20,7 @@
     "@hapi/boom": "^9.1.2",
     "@hapi/hapi": "^20.1.2",
     "@joi/date": "^2.1.0",
+    "@sendgrid/mail": "^7.4.2",
     "cuid": "^2.1.8",
     "date-fns": "^2.19.0",
     "dotenv": "^8.2.0",
