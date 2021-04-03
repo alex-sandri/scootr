@@ -27,7 +27,11 @@ export default <ServerRoute[]>[
             },
         },
         handler: async (request, h) =>
-        {},
+        {
+            const utente = await Utente.crea(request.payload as any);
+
+            return utente.serializza();
+        },
     },
     {
         method: "PATCH",
