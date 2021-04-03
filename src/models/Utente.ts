@@ -53,6 +53,7 @@ export class Utente
                     ("id", "nome", "cognome", "email", "data_nascita", "codice_fiscale")
                 values
                     ($1, $2, $3, $4, $5, $6)
+                returning *
                 `,
                 [
                     Utilities.id(Config.PREFISSI_ID.UTENTE),
