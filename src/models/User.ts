@@ -255,11 +255,11 @@ export class User
 
     public static readonly SCHEMA = {
         CREATE: Joi.object({
-            nome: Schema.STRING.required(),
-            cognome: Schema.STRING.required(),
+            first_name: Schema.STRING.required(),
+            last_name: Schema.STRING.required(),
             email: Schema.EMAIL.required(),
-            data_nascita: Schema.DATE.max("now").required(),
-            codice_fiscale: Schema.FISCAL_NUMBER.required(),
+            birth_date: Schema.DATE.max("now").required(),
+            fiscal_number: Schema.FISCAL_NUMBER.required(),
         }),
         UPDATE: Joi.object({
             email: Schema.EMAIL.optional(),
