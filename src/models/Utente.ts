@@ -200,7 +200,7 @@ export class Utente
             nome: Schema.STRING.required(),
             cognome: Schema.STRING.required(),
             email: Schema.EMAIL.required(),
-            data_nascita: Schema.DATE.required(),
+            data_nascita: Schema.DATE.max("now").required(),
             codice_fiscale: Schema.CODICE_FISCALE.required(),
         }),
         UPDATE: Joi.object({
