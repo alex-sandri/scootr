@@ -1,6 +1,7 @@
 import Boom from "@hapi/boom";
 import { Config } from "../config/Config";
 import Database from "../utilities/Database";
+import { Utilities } from "../utilities/Utilities";
 
 interface IDatabaseUtente
 {
@@ -54,7 +55,7 @@ export class Utente
                     ($1, $2, $3, $4, $5, $6)
                 `,
                 [
-                    // TODO id
+                    Utilities.id(Config.PREFISSI_ID.UTENTE),
                     data.nome,
                     data.cognome,
                     data.email,
@@ -74,7 +75,7 @@ export class Utente
                 name: `${data.nome} ${data.cognome}`,
                 email: data.email,
                 metadata: {
-                    user_id: result.rows[0].id
+                    user_id: result.rows[0].id,
                 },
             })
             .catch(async () =>
