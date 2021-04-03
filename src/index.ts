@@ -4,6 +4,8 @@ dotenv.config();
 
 import Boom from "@hapi/boom";
 import Hapi from "@hapi/hapi";
+import routes from "./routes";
+import Database from "./utilities/Database";
 
 const server = new Hapi.Server({
     port: process.env.PORT,
@@ -11,14 +13,9 @@ const server = new Hapi.Server({
 
 const init = async () =>
 {
-    server.route({
-        method: "POST",
-        path: "/sessions",
-        handler: async (request, h) =>
-        {
-            
-        },
-    });
+    Database.init();
+
+    server.route(routes);
 
     server.start();
 }
