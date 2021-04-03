@@ -1,7 +1,6 @@
 import Boom from "@hapi/boom";
 import { ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
-import { Config } from "../../config/Config";
 import { Schema } from "../../config/Schema";
 
 export default <ServerRoute[]>[
@@ -11,7 +10,7 @@ export default <ServerRoute[]>[
         options: {
             validate: {
                 params: Joi.object({
-                    id: Schema.ID(Config.PREFISSI_ID.UTENTE).required(),
+                    id: Schema.ID.UTENTE.required(),
                 }),
             },
         },

@@ -1,5 +1,6 @@
 import BaseJoi from "joi";
 import JoiDate from "@joi/date";
+import { Config } from "./Config";
 
 const Joi = BaseJoi.extend(JoiDate) as BaseJoi.Root;
 
@@ -7,7 +8,17 @@ export class Schema
 {
     public static readonly STRING = Joi.string().trim();
 
-    public static readonly ID = (prefix: string) => Schema.STRING.pattern(new RegExp(`^${prefix}_.+$`));
+    // TODO: Find a way to make this obj type safe
+    public static readonly ID = Object
+        .entries(Config.PREFISSI_ID)
+        .map(([ key, value ]) =>
+        {
+            return { [key]: Schema.STRING.pattern(new RegExp(`^${value}_.+$`)) };
+        })
+        .reduce((prev, curr) =>
+        {
+            return { ...prev, ...curr };
+        }, {});
 
     public static readonly EMAIL = Schema.STRING.email();
 
