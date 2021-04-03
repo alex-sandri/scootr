@@ -14,7 +14,7 @@ create extension "postgis";
     - a separator (an underscore)
     - a random string
 */
-create domain "id" as varchar(300) check(value like '___\_%');
+create domain "id" as text check(value like '___\_%');
 
 /*
     '320' is the maximum length of an email address as documented here:
