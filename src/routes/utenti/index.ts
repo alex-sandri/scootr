@@ -2,6 +2,7 @@ import Boom from "@hapi/boom";
 import { ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
 import { Schema } from "../../config/Schema";
+import { Utente } from "../../models/Utente";
 
 export default <ServerRoute[]>[
     {
@@ -22,7 +23,7 @@ export default <ServerRoute[]>[
         path: "/utenti",
         options: {
             validate: {
-                payload: Joi,
+                payload: Utente.SCHEMA.CREATE,
             },
         },
         handler: async (request, h) =>
@@ -36,7 +37,7 @@ export default <ServerRoute[]>[
                 params: Joi.object({
                     id: Schema.ID.UTENTE.required(),
                 }),
-                payload: Joi,
+                payload: Utente.SCHEMA.UPDATE,
             },
         },
         handler: async (request, h) =>
