@@ -1,4 +1,5 @@
 import Boom from "@hapi/boom";
+import { differenceInYears } from "date-fns";
 import { Config } from "../config/Config";
 import Database from "../utilities/Database";
 import { Utilities } from "../utilities/Utilities";
@@ -42,6 +43,16 @@ export class Utente
 
     public static async crea(data: ICreaUtente): Promise<Utente>
     {
+        if (differenceInYears(new Date(), data.data_nascita) < Config.UTENTE_ETA_MINIMA)
+        {
+            throw Boom.tooEarly(undefined, [
+                {
+                    field: "data_nascita",
+                    error: `Per potersi registrare si deve avere almeno ${Config.UTENTE_ETA_MINIMA} anni compiuti`,
+                },
+            ]);
+        }
+
         const client = await Database.pool.connect();
 
         await client.query("begin");

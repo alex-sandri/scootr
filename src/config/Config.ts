@@ -2,6 +2,8 @@ import Stripe from "stripe";
 
 export class Config
 {
+    public static readonly UTENTE_ETA_MINIMA = 18;
+
     public static readonly PREFISSI_ID = {
         UTENTE: "usr",
     } as const;
