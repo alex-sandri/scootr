@@ -181,11 +181,7 @@ export class Vehicle
         return {
             id: this.id,
             battery_level: this.battery_level,
-            // TODO
-            location: {
-                latitude: 123,
-                longitude: 456,
-            },
+            location: this.location,
         };
     }
 
