@@ -33,4 +33,6 @@ export class Schema
         latitude: Schema.LATITUDE.required(),
         longitude: Schema.LONGITUDE.required(),
     });
+
+    public static readonly ARRAY = (type: BaseJoi.SchemaLikeWithoutArray) => Joi.array().items(type);
 }

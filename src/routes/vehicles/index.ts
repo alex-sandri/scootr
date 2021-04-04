@@ -7,6 +7,27 @@ import { Vehicle } from "../../models/Vehicle";
 export default <ServerRoute[]>[
     {
         method: "GET",
+        path: "/vehicles",
+        options: {
+            validate: {
+                query: Joi.object({
+                    location: Schema.LOCATION.required(),
+                    radius: Joi.number().min(0).max(1000).unit("meters"),
+                }),
+            },
+            response: {
+                schema: Schema.ARRAY(Vehicle.SCHEMA.OBJ),
+            },
+        },
+        handler: async (request, h) =>
+        {
+            const vehicles = await Vehicle.retrieveMultiple(request.query);
+
+            return vehicles.map(vehicle => vehicle.serialize());
+        },
+    },
+    {
+        method: "GET",
         path: "/vehicles/{id}",
         options: {
             validate: {
