@@ -20,7 +20,18 @@ export default <ServerRoute[]>[
         },
         handler: async (request, h) =>
         {
-            throw Boom.notImplemented();
+            const authenticatedUser = request.auth.credentials.user as User;
+
+            const { id } = request.params;
+
+            if (authenticatedUser.id !== id)
+            {
+                throw Boom.forbidden();
+            }
+
+            const user = await User.retrieve(id);
+
+            return user.serialize();
         },
     },
     {
