@@ -80,10 +80,7 @@ export class Vehicle
                 [
                     Utilities.id(Config.ID_PREFIXES.USER),
                     data.battery_level,
-                    Vehicle.formatLocationForDatabase(
-                        data.location.latitude,
-                        data.location.longitude,
-                    ),
+                    Vehicle.formatLocationForDatabase(data.location),
                 ],
             )
             .catch(async () =>
@@ -133,10 +130,7 @@ export class Vehicle
                 `,
                 [
                     this.battery_level,
-                    Vehicle.formatLocationForDatabase(
-                        this.location.latitude,
-                        this.location.longitude,
-                    ),
+                    Vehicle.formatLocationForDatabase(this.location),
                     this.id,
                 ],
             )
@@ -159,9 +153,9 @@ export class Vehicle
     // UTILITIES //
     ///////////////
 
-    private static formatLocationForDatabase(latitude: number, longitude: number): string
+    private static formatLocationForDatabase(location: IVehicleLocation): string
     {
-        return `SRID=4326;POINT(${longitude} ${latitude})`;
+        return `SRID=4326;POINT(${location.longitude} ${location.latitude})`;
     }
 
     private static parseLocationFromDatabase(location: string): IVehicleLocation
