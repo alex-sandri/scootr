@@ -162,10 +162,9 @@ export class Vehicle
 
     private static parseLocationFromDatabase(location: string): IVehicleLocation
     {
-        console.log(location);
         return {
-            latitude: 90,
-            longitude: 0,
+            latitude: parseFloat(location.split(";")[1]),
+            longitude: parseFloat(location.split(";")[0]),
         };
     }
 
