@@ -167,6 +167,11 @@ export default <ServerRoute[]>[
                         + "If this is you click the link below to accept the sign in\n"
                         + "If you are not sure and decide not to click it no one will gain access to your account\n\n"
                         + `${Config.API_HOST}/auth/email/${token}`,
+                    trackingSettings: {
+                        clickTracking: {
+                            enable: false,
+                        },
+                    },
                 })
                 .catch(async () =>
                 {
