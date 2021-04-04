@@ -38,7 +38,7 @@ create table "user_types"
 create table "users"
 (
     "id" id not null,
-    "type" text not null,
+    "type" text not null default 'user',
     "first_name" text not null,
     "last_name" text not null,
     "email" email_address not null,
