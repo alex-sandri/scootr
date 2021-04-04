@@ -51,7 +51,7 @@ export class Session
                 [
                     Utilities.id(Config.ID_PREFIXES.SESSION),
                     user.id,
-                    expires,
+                    expires.toISOString(),
                 ],
             )
             .catch(() =>
