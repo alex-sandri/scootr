@@ -161,7 +161,7 @@ export class Vehicle
 
     private static formatLocationForDatabase(latitude: number, longitude: number): string
     {
-        return ``;
+        return `SRID=4326;POINT(${longitude} ${latitude})`;
     }
 
     private static parseLocationFromDatabase(location: string): IVehicleLocation
