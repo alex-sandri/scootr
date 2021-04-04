@@ -151,6 +151,18 @@ create table "sign_in_requests"
     check ("expires_at" > current_timestamp at time zone 'UTC')
 );
 
+-----------
+-- VIEWS --
+-----------
+
+create view "v_vehicles"
+as
+    select
+        "id",
+        "battery_level",
+        st_x("location"::text) || ';' || st_y("location"::text) as "location"
+    from "vehicles";
+
 ------------------
 -- INITIAL DATA --
 ------------------
