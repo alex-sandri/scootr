@@ -95,14 +95,7 @@ export class Vehicle
     {
         const result = await Database.pool
             .query(
-                `
-                select
-                    "id",
-                    "battery_level",
-                    st_x("location"::text) || ';' || st_y("location"::text) as "location"
-                from "vehicles"
-                where "id" = $1
-                `,
+                `select * from "v_vehicles" where "id" = $1`,
                 [ id ],
             );
 
