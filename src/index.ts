@@ -5,6 +5,7 @@ import routes from "./routes";
 import Database from "./utilities/Database";
 import { ValidationError } from "joi";
 import Boom from "@hapi/boom";
+import qs from "qs";
 import { Session } from "./models/Session";
 import { Config } from "./config/Config";
 
@@ -37,6 +38,9 @@ const server = new Hapi.Server({
         response: {
             emptyStatusCode: 204,
         },
+    },
+    query: {
+        parser: qs.parse,
     },
 });
 
