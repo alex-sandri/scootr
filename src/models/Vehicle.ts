@@ -64,17 +64,18 @@ export class Vehicle
 
     public static async create(data: ICreateVehicle): Promise<Vehicle>
     {
-        const result = await Database.pool
+        const id = Utilities.id(Config.ID_PREFIXES.VEHICLE);
+
+        await Database.pool
             .query(
                 `
                 insert into "vehicles"
                     ("id", "battery_level", "location")
                 values
                     ($1, $2, $3)
-                returning *
                 `,
                 [
-                    Utilities.id(Config.ID_PREFIXES.VEHICLE),
+                    id,
                     data.battery_level,
                     Vehicle.formatLocationForDatabase(data.location),
                 ],
@@ -84,14 +85,25 @@ export class Vehicle
                 throw Boom.badRequest();
             });
 
-        return Vehicle.deserialize(result.rows[0]);
+        return Vehicle.deserialize({
+            id,
+            battery_level: data.battery_level,
+            location: `${data.location.longitude};${data.location.latitude}`,
+        });
     }
 
     public static async retrieve(id: string): Promise<Vehicle>
     {
         const result = await Database.pool
             .query(
-                `select * from "vehicles" where "id" = $1`,
+                `
+                select
+                    "id",
+                    "battery_level",
+                    st_x("location"::text) || ';' || st_y("location"::text) as "location"
+                from "vehicles"
+                where "id" = $1
+                `,
                 [ id ],
             );
 
@@ -145,11 +157,12 @@ export class Vehicle
 
     private static formatLocationForDatabase(location: IVehicleLocation): string
     {
-        return `SRID=4326;POINT(${location.longitude} ${location.latitude})`;
+        return `srid=4326;point(${location.longitude} ${location.latitude})`;
     }
 
     private static parseLocationFromDatabase(location: string): IVehicleLocation
     {
+        console.log(location);
         return {
             latitude: 90,
             longitude: 0,
