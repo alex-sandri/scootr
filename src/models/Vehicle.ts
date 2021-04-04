@@ -74,7 +74,7 @@ export class Vehicle
                 returning *
                 `,
                 [
-                    Utilities.id(Config.ID_PREFIXES.USER),
+                    Utilities.id(Config.ID_PREFIXES.VEHICLE),
                     data.battery_level,
                     Vehicle.formatLocationForDatabase(data.location),
                 ],
@@ -111,7 +111,7 @@ export class Vehicle
         await Database.pool
             .query(
                 `
-                update "users"
+                update "vehicles"
                 set
                     "battery_level" = $1,
                     "location" = $2
@@ -134,7 +134,7 @@ export class Vehicle
     {
         await Database.pool
             .query(
-                `delete from "users" where "id" = $1`,
+                `delete from "vehicles" where "id" = $1`,
                 [ this.id, ],
             );
     }
@@ -184,7 +184,7 @@ export class Vehicle
 
     public static readonly SCHEMA = {
         OBJ: Joi.object({
-            id: Schema.ID.USER.required(),
+            id: Schema.ID.VEHICLE.required(),
             battery_level: Joi.number().integer().min(0).max(100).required(),
             location: Joi.object({
                 latitude: Schema.LATITUDE.required(),
