@@ -13,26 +13,29 @@ interface IDatabaseVehicle
     location: string,
 }
 
+interface IVehicleLocation
+{
+    latitude: number,
+    longitude: number,
+}
+
 interface ICreateVehicle
 {
     battery_level: number,
-    location: string,
+    location: IVehicleLocation,
 }
 
 interface IUpdateVehicle
 {
     battery_level?: number,
-    location?: string,
+    location?: IVehicleLocation,
 }
 
 export interface ISerializedVehicle
 {
     id: string,
     battery_level: number,
-    location: {
-        latitude: number,
-        longitude: number,
-    },
+    location: IVehicleLocation,
 }
 
 export class Vehicle
@@ -41,7 +44,7 @@ export class Vehicle
     (
         public readonly id: string,
         private _battery_level: number,
-        private _location: string,
+        private _location: IVehicleLocation,
     )
     {}
 
@@ -50,7 +53,7 @@ export class Vehicle
         return this._battery_level;
     }
 
-    public get location(): string
+    public get location(): IVehicleLocation
     {
         return this._location;
     }
@@ -77,7 +80,10 @@ export class Vehicle
                 [
                     Utilities.id(Config.ID_PREFIXES.USER),
                     data.battery_level,
-                    data.location,
+                    Vehicle.formatLocationForDatabase(
+                        data.location.latitude,
+                        data.location.longitude,
+                    ),
                 ],
             )
             .catch(async () =>
@@ -127,7 +133,10 @@ export class Vehicle
                 `,
                 [
                     this.battery_level,
-                    this.location,
+                    Vehicle.formatLocationForDatabase(
+                        this.location.latitude,
+                        this.location.longitude,
+                    ),
                     this.id,
                 ],
             )
@@ -144,6 +153,23 @@ export class Vehicle
                 `delete from "users" where "id" = $1`,
                 [ this.id, ],
             );
+    }
+
+    ///////////////
+    // UTILITIES //
+    ///////////////
+
+    private static formatLocationForDatabase(latitude: number, longitude: number): string
+    {
+        return ``;
+    }
+
+    private static parseLocationFromDatabase(location: string): IVehicleLocation
+    {
+        return {
+            latitude: 90,
+            longitude: 0,
+        };
     }
 
     ///////////////////
@@ -165,11 +191,10 @@ export class Vehicle
 
     private static deserialize(data: IDatabaseVehicle): Vehicle
     {
-        console.log(data);
         return new Vehicle(
             data.id,
             data.battery_level,
-            data.location,
+            Vehicle.parseLocationFromDatabase(data.location),
         );
     }
 
