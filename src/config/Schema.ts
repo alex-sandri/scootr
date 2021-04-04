@@ -29,4 +29,8 @@ export class Schema
 
     public static readonly LATITUDE = Joi.number().min(-90).max(90);
     public static readonly LONGITUDE = Joi.number().min(-180).max(180);
+    public static readonly LOCATION = Joi.object({
+        latitude: Schema.LATITUDE.required(),
+        longitude: Schema.LONGITUDE.required(),
+    });
 }

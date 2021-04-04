@@ -197,24 +197,15 @@ export class Vehicle
         OBJ: Joi.object({
             id: Schema.ID.VEHICLE.required(),
             battery_level: Joi.number().integer().min(0).max(100).required(),
-            location: Joi.object({
-                latitude: Schema.LATITUDE.required(),
-                longitude: Schema.LONGITUDE.required(),
-            }).required(),
+            location: Schema.LOCATION.required(),
         }),
         CREATE: Joi.object({
             battery_level: Joi.number().integer().min(0).max(100).required(),
-            location: Joi.object({
-                latitude: Schema.LATITUDE.required(),
-                longitude: Schema.LONGITUDE.required(),
-            }).required(),
+            location: Schema.LOCATION.required(),
         }),
         UPDATE: Joi.object({
             battery_level: Joi.number().integer().min(0).max(100).optional(),
-            location: Joi.object({
-                latitude: Schema.LATITUDE.required(),
-                longitude: Schema.LONGITUDE.required(),
-            }).optional(),
+            location: Schema.LOCATION.optional(),
         }),
     } as const;
 }
