@@ -1,5 +1,4 @@
 import Boom from "@hapi/boom";
-import { differenceInYears } from "date-fns";
 import Joi from "joi";
 import { Config } from "../config/Config";
 import { Schema } from "../config/Schema";
