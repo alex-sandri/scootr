@@ -147,6 +147,30 @@ export class Vehicle
     // UTILITIES //
     ///////////////
 
+    public static async retrieveMultiple(options: {
+        location: IVehicleLocation,
+        /**
+         * The radius in meters
+         */
+        radius: number,
+    }): Promise<Vehicle[]>
+    {
+        const result = await Database.pool
+            .query(
+                `
+                select *
+                from vehicles 
+                where st_dwithin("location", $1, $2)
+                `,
+                [
+                    Vehicle.formatLocationForDatabase(options.location),
+                    options.radius,
+                ],
+            );
+
+        return result.rows.map(Vehicle.deserialize);
+    }
+
     private static formatLocationForDatabase(location: IVehicleLocation): string
     {
         return `srid=4326;point(${location.longitude} ${location.latitude})`;

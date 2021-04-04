@@ -12,7 +12,7 @@ export default <ServerRoute[]>[
             validate: {
                 query: Joi.object({
                     location: Schema.LOCATION.required(),
-                    radius: Joi.number().min(0).max(1000).unit("meters"),
+                    radius: Joi.number().min(0).max(1000).unit("meters").required(),
                 }),
             },
             response: {
@@ -21,7 +21,10 @@ export default <ServerRoute[]>[
         },
         handler: async (request, h) =>
         {
-            const vehicles = await Vehicle.retrieveMultiple(request.query);
+            const vehicles = await Vehicle.retrieveMultiple({
+                location: request.query.location,
+                radius: request.query.radius,
+            });
 
             return vehicles.map(vehicle => vehicle.serialize());
         },
