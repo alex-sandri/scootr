@@ -95,7 +95,11 @@ export class Vehicle
     {
         const result = await Database.pool
             .query(
-                `select * from "v_vehicles" where "id" = $1`,
+                `
+                select "id", "battery_level", "location"
+                from "v_vehicles"
+                where "id" = $1
+                `,
                 [ id ],
             );
 
@@ -158,9 +162,9 @@ export class Vehicle
         const result = await Database.pool
             .query(
                 `
-                select *
-                from vehicles
-                where st_dwithin("location", $1, $2)
+                select "id", "battery_level", "location"
+                from "v_vehicles"
+                where st_dwithin("postgis_location", $1, $2)
                 `,
                 [
                     Vehicle.formatLocationForDatabase(options.location),

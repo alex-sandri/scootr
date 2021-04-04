@@ -160,7 +160,8 @@ as
     select
         "id",
         "battery_level",
-        st_x("location"::text) || ';' || st_y("location"::text) as "location"
+        st_x("location"::text) || ';' || st_y("location"::text) as "location",
+        "location" as "postgis_location"
     from "vehicles";
 
 ------------------
