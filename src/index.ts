@@ -104,6 +104,6 @@ const init = async () =>
     server.route(routes);
 
     server.start();
-}
+};
 
 init();
