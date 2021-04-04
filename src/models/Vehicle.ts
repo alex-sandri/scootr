@@ -64,11 +64,7 @@ export class Vehicle
 
     public static async create(data: ICreateVehicle): Promise<Vehicle>
     {
-        const client = await Database.pool.connect();
-
-        await client.query("begin");
-
-        const result = await client
+        const result = await Database.pool
             .query(
                 `
                 insert into "vehicles"
@@ -83,16 +79,10 @@ export class Vehicle
                     Vehicle.formatLocationForDatabase(data.location),
                 ],
             )
-            .catch(async () =>
+            .catch(() =>
             {
-                await client.query("rollback");
-
                 throw Boom.badRequest();
             });
-
-        await client.query("commit");
-
-        client.release();
 
         return Vehicle.deserialize(result.rows[0]);
     }
