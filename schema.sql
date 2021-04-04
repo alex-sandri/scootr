@@ -91,7 +91,7 @@ create table "vehicles"
 (
     "id" id not null,
     "battery_level" int not null,
-    "location" geography not null,
+    "location" geography(point, 4326) not null, -- https://epsg.io/4326
 
     primary key ("id"),
 
