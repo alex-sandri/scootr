@@ -159,7 +159,7 @@ export class Vehicle
             .query(
                 `
                 select *
-                from vehicles 
+                from vehicles
                 where st_dwithin("location", $1, $2)
                 `,
                 [
