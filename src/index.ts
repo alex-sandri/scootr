@@ -65,10 +65,17 @@ const init = async () =>
 
                 const { user } = session;
 
+                const scope = [ user.type ];
+
+                if (user.type === "admin")
+                {
+                    scope.push("user");
+                }
+
                 return h.authenticated({
                     credentials: {
                         user,
-                        scope: [ user.type ],
+                        scope,
                     },
                 });
             },
