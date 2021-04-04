@@ -9,6 +9,7 @@ import { Utilities } from "../utilities/Utilities";
 interface IDatabaseUser
 {
     id: string,
+    type: "admin" | "user",
     first_name: string,
     last_name: string,
     email: string,
@@ -46,6 +47,7 @@ export class User
     private constructor
     (
         public readonly id: string,
+        public readonly type: "admin" | "user",
         public readonly first_name: string,
         public readonly last_name: string,
         private _email: string,
@@ -265,6 +267,7 @@ export class User
     {
         return new User(
             data.id,
+            data.type,
             data.first_name,
             data.last_name,
             data.email,

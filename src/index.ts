@@ -65,14 +65,22 @@ const init = async () =>
 
                 const { user } = session;
 
-                return h.authenticated({ credentials: { user } });
+                return h.authenticated({
+                    credentials: {
+                        user,
+                        scope: [ user.type ],
+                    },
+                });
             },
         };
     });
 
     server.auth.strategy("session", "token");
 
-    server.auth.default({ strategy: "session" });
+    server.auth.default({
+        strategy: "session",
+        scope: "user",
+    });
 
     server.ext("onPreResponse", (request, h) =>
     {
