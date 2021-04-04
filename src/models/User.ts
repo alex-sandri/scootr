@@ -256,7 +256,7 @@ export class User
             first_name: this.first_name,
             last_name: this.last_name,
             email: this.email,
-            birth_date: this.birth_date.toISOString(),
+            birth_date: this.birth_date.toISOString().split("T")[0],
             fiscal_number: this.fiscal_number,
         };
     }
