@@ -28,9 +28,17 @@ create domain "fiscal_number" as char(16) check (value = upper(value));
 -- TABLES --
 ------------
 
+create table "user_types"
+(
+    "id" text not null,
+
+    primary key ("id")
+);
+
 create table "users"
 (
     "id" id not null,
+    "type" text not null,
     "first_name" text not null,
     "last_name" text not null,
     "email" email_address not null,
@@ -42,6 +50,8 @@ create table "users"
 
     unique ("email"),
     unique ("fiscal_number"),
+
+    foreign key ("type") references "user_types" on update cascade on delete cascade,
 
     check ("id" like 'usr_%'),
     check ("birth_date" < current_date)
@@ -140,3 +150,11 @@ create table "sign_in_requests"
     check ("id" like 'sir_%'),
     check ("expires_at" > current_timestamp at time zone 'UTC')
 );
+
+------------------
+-- INITIAL DATA --
+------------------
+
+insert into "user_types" values
+    ('admin'),
+    ('user');
