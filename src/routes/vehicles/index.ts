@@ -12,7 +12,7 @@ export default <ServerRoute[]>[
             validate: {
                 query: Joi.object({
                     location: Schema.LOCATION.required(),
-                    radius: Joi.number().min(0).max(1000).unit("meters").required(),
+                    radius: Joi.number().min(0).unit("meters").required(),
                 }),
             },
             response: {
