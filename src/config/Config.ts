@@ -11,17 +11,6 @@ export class Config
      */
     public static readonly SESSION_DURATION = 60 * 60 * 24 * 30;
 
-    /**
-     * @default
-     * 
-     * 5 minutes
-     */
-    public static readonly SIGN_IN_REQUEST_DURATION = 60 * 5;
-
-    public static readonly SIGN_IN_REQUEST_TOKEN_BYTES = 60;
-
-    public static readonly USER_MIN_AGE = 18;
-
     public static readonly ID_PREFIXES = {
         USER: "usr",
         WALLET: "wlt",
