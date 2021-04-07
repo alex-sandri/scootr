@@ -12,6 +12,7 @@
   "license": "UNLICENSED",
   "private": true,
   "devDependencies": {
+    "@types/hapi__cookie": "^10.1.2",
     "@types/hapi__hapi": "^20.0.5",
     "@types/pg": "^7.14.11",
     "@types/qs": "^6.9.6",
@@ -23,11 +24,11 @@
   },
   "dependencies": {
     "@hapi/boom": "^9.1.2",
+    "@hapi/cookie": "^11.0.2",
     "@hapi/hapi": "^20.1.2",
     "@joi/date": "^2.1.0",
     "@sendgrid/mail": "^7.4.2",
     "cuid": "^2.1.8",
-    "date-fns": "^2.19.0",
     "dotenv": "^8.2.0",
     "joi": "^17.4.0",
     "pg": "^8.5.1",

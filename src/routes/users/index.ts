@@ -35,44 +35,6 @@ export default <ServerRoute[]>[
         },
     },
     {
-        method: "POST",
-        path: "/users",
-        options: {
-            auth: false,
-            validate: {
-                payload: User.SCHEMA.CREATE,
-            },
-            response: {
-                schema: User.SCHEMA.OBJ,
-            },
-        },
-        handler: async (request, h) =>
-        {
-            const user = await User.create(request.payload as any);
-
-            return user.serialize();
-        },
-    },
-    {
-        method: "PATCH",
-        path: "/users/{id}",
-        options: {
-            validate: {
-                params: Joi.object({
-                    id: Schema.ID.USER.required(),
-                }),
-                payload: User.SCHEMA.UPDATE,
-            },
-            response: {
-                schema: User.SCHEMA.OBJ,
-            },
-        },
-        handler: async (request, h) =>
-        {
-            throw Boom.notImplemented();
-        },
-    },
-    {
         method: "DELETE",
         path: "/users/{id}",
         options: {

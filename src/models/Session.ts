@@ -1,9 +1,7 @@
 import Boom from "@hapi/boom";
 import Joi from "joi";
-import { Config } from "../config/Config";
 import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
-import { Utilities } from "../utilities/Utilities";
 import { ISerializedUser, User } from "./User";
 
 interface IDatabaseSession
@@ -33,34 +31,6 @@ export class Session
     //////////
     // CRUD //
     //////////
-
-    public static async create(user: User): Promise<Session>
-    {
-        const expires = new Date();
-        expires.setSeconds(new Date().getSeconds() + Config.SESSION_DURATION);
-
-        const result = await Database.pool
-            .query(
-                `
-                insert into "sessions"
-                    ("id", "user", "expires_at")
-                values
-                    ($1, $2, $3)
-                returning *
-                `,
-                [
-                    Utilities.id(Config.ID_PREFIXES.SESSION),
-                    user.id,
-                    expires.toISOString(),
-                ],
-            )
-            .catch(() =>
-            {
-                throw Boom.badRequest();
-            });
-
-        return Session.deserialize(result.rows[0]);
-    }
 
     public static async retrieve(id: string): Promise<Session>
     {
@@ -129,9 +99,6 @@ export class Session
             id: Schema.ID.SESSION.required(),
             user: User.SCHEMA.OBJ.required(),
             expires_at: Schema.DATETIME.required(),
-        }),
-        CREATE: Joi.object({
-            email: Schema.EMAIL.required(),
         }),
     } as const;
 }
