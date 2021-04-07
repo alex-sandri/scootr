@@ -1,7 +1,6 @@
 import "dotenv/config";
 
 import Hapi from "@hapi/hapi";
-import Cookie from "@hapi/cookie";
 import routes from "./routes";
 import Database from "./utilities/Database";
 import { ValidationError } from "joi";
@@ -49,52 +48,45 @@ const init = async () =>
 {
     Database.init();
 
-    await server.register(Cookie);
-
-    server.auth.strategy("session", "cookie", {
-        cookie: {
-            name: "session_id",
-            password: process.env.AUTH_COOKIE_ENCRYPTION_PASSWORD,
-            ttl: Config.SESSION_DURATION,
-            domain: Config.CLIENT_HOST,
-            path: "/",
-            clearInvalid: true,
-            isSameSite: "Strict",
-            isSecure: Config.IS_PRODUCTION,
-            isHttpOnly: true,
-        },
-        validateFunc: async (request, session?: { id: string }) =>
-        {
-            if (!session)
+    server.auth.scheme("token", () =>
+    {
+        return {
+            authenticate: async (request, h) =>
             {
-                return { valid: false };
-            }
+                const authorization = request.raw.req.headers.authorization;
 
-            const userSession = await Session.retrieve(session.id);
+                if (!authorization)
+                {
+                    throw Boom.unauthorized();
+                }
 
-            if (userSession.hasExpired())
-            {
-                throw Boom.unauthorized();
-            }
+                const session = await Session.retrieve(authorization.split(" ")[1]);
 
-            const { user } = userSession;
+                if (session.hasExpired())
+                {
+                    throw Boom.unauthorized();
+                }
 
-            const scope = [ user.type ];
+                const { user } = session;
 
-            if (user.type === "admin")
-            {
-                scope.push("user");
-            }
+                const scope = [ user.type ];
 
-            return {
-                valid: true,
-                credentials: {
-                    user,
-                    scope,
-                },
-            };
-        },
+                if (user.type === "admin")
+                {
+                    scope.push("user");
+                }
+
+                return h.authenticated({
+                    credentials: {
+                        user,
+                        scope,
+                    },
+                });
+            },
+        };
     });
+
+    server.auth.strategy("session", "token");
 
     server.auth.default({
         strategy: "session",
