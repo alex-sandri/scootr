@@ -27,7 +27,6 @@
     "@hapi/cookie": "^11.0.2",
     "@hapi/hapi": "^20.1.2",
     "@joi/date": "^2.1.0",
-    "@sendgrid/mail": "^7.4.2",
     "cuid": "^2.1.8",
     "dotenv": "^8.2.0",
     "joi": "^17.4.0",
