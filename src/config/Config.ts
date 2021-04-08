@@ -21,6 +21,8 @@ export class Config
         SIGN_IN_REQUEST: "sir",
     } as const;
 
+    public static readonly ID_BYTE_LENGTH = 30;
+
     public static readonly STRIPE = new Stripe(process.env.STRIPE_SECRET_API_KEY ?? "", { apiVersion: "2020-08-27" });
 
     public static readonly API_HOST = Config.IS_PRODUCTION
