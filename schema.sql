@@ -60,8 +60,9 @@ create table "users"
 create table "wallets"
 (
     "id" id not null,
-    "user" id not null,
+    "name" varchar(30) not null,
     "balance" numeric(10, 2) not null,
+    "user" id not null,
 
     primary key ("id"),
 
