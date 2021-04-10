@@ -16,20 +16,6 @@ interface IDatabaseUser
     stripe_customer_id: string | null,
 }
 
-interface ICreateUser
-{
-    first_name: string,
-    last_name: string,
-    email: string,
-    birth_date: Date,
-    fiscal_number: string,
-}
-
-interface IUpdateUser
-{
-    email?: string,
-}
-
 export interface ISerializedUser
 {
     id: string,
