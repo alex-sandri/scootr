@@ -131,6 +131,17 @@ export class Wallet
     // UTILITIES //
     ///////////////
 
+    public static async forUser(user: User): Promise<Wallet[]>
+    {
+        const result = await Database.pool
+            .query(
+                `select * from "wallets" where "user" = $1`,
+                [ user.id ],
+            );
+
+        return Promise.all(result.rows.map(Wallet.deserialize));
+    }
+
     public async setDefaultPaymentMethod(paymentMethod: any): Promise<void>
     {
         throw Boom.notImplemented();
