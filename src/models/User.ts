@@ -3,6 +3,7 @@ import Joi from "joi";
 import { Config } from "../config/Config";
 import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
+import { Wallet } from "./Wallet";
 
 interface IDatabaseUser
 {
@@ -113,6 +114,37 @@ export class User
         }
 
         return User.deserialize(result.rows[0]);
+    }
+
+    public async setDefaultWallet(wallet: Wallet): Promise<void>
+    {
+        const client = await Database.pool.connect();
+
+        await client.query("begin");
+
+        await client
+            .query(
+                `delete from "default_wallets" where "user" = $1`,
+                [ this.id ],
+            )
+            .catch(() =>
+            {
+                throw Boom.badImplementation();
+            });
+
+        await client
+            .query(
+                `insert into "default_wallets" ("user", "wallet") values ($1, $2)`,
+                [ this.id, wallet.id ],
+            )
+            .catch(() =>
+            {
+                throw Boom.badImplementation();
+            });
+
+        await client.query("commit");
+
+        client.release();
     }
 
     ///////////////////
