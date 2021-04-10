@@ -7,7 +7,7 @@ import { Wallet } from "../../models/Wallet";
 
 export default <ServerRoute[]>[
     {
-        method: [ "GET", "POST" ],
+        method: "GET",
         path: "/users/{id}/wallets",
         options: {
             validate: {
@@ -16,23 +16,21 @@ export default <ServerRoute[]>[
                 }),
             },
             response: {
-                schema: Wallet.SCHEMA.OBJ,
+                schema: Schema.ARRAY(Wallet.SCHEMA.OBJ),
             },
         },
         handler: async (request, h) =>
         {
             const authenticatedUser = request.auth.credentials.user as User;
 
-            const { id } = request.params;
-
-            if (authenticatedUser.id !== id)
+            if (authenticatedUser.id !== request.params.id)
             {
                 throw Boom.forbidden();
             }
 
-            const user = await User.retrieve(id);
+            const wallets = await Wallet.forUser(authenticatedUser);
 
-            return user.serialize();
+            return wallets.map(wallet => wallet.serialize());
         },
     },
     {
@@ -52,16 +50,41 @@ export default <ServerRoute[]>[
         {
             const authenticatedUser = request.auth.credentials.user as User;
 
-            const { id } = request.params;
+            const wallet = await Wallet.retrieve(request.params.id);
 
-            if (authenticatedUser.id !== id)
+            if (authenticatedUser.id !== wallet.user.id)
             {
                 throw Boom.forbidden();
             }
 
-            const user = await User.retrieve(id);
+            return wallet.serialize();
+        },
+    },
+    {
+        method: "POST",
+        path: "/users/{id}/wallets",
+        options: {
+            validate: {
+                params: Joi.object({
+                    id: Schema.ID.USER.required(),
+                }),
+            },
+            response: {
+                schema: Wallet.SCHEMA.OBJ,
+            },
+        },
+        handler: async (request, h) =>
+        {
+            const authenticatedUser = request.auth.credentials.user as User;
 
-            return user.serialize();
+            if (authenticatedUser.id !== request.params.id)
+            {
+                throw Boom.forbidden();
+            }
+
+            const wallet = await Wallet.create(request.payload as any, authenticatedUser);
+
+            return wallet.serialize();
         },
     },
     {
@@ -81,16 +104,16 @@ export default <ServerRoute[]>[
         {
             const authenticatedUser = request.auth.credentials.user as User;
 
-            const { id } = request.params;
+            const wallet = await Wallet.retrieve(request.params.id);
 
-            if (authenticatedUser.id !== id)
+            if (authenticatedUser.id !== wallet.user.id)
             {
                 throw Boom.forbidden();
             }
 
-            const user = await User.retrieve(id);
+            await authenticatedUser.setDefaultWallet(wallet);
 
-            return user.serialize();
+            return h.response();
         },
     },
     {
