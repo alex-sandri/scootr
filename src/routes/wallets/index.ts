@@ -68,6 +68,7 @@ export default <ServerRoute[]>[
                 params: Joi.object({
                     id: Schema.ID.USER.required(),
                 }),
+                payload: Wallet.SCHEMA.CREATE,
             },
             response: {
                 schema: Wallet.SCHEMA.OBJ,
@@ -94,6 +95,9 @@ export default <ServerRoute[]>[
             validate: {
                 params: Joi.object({
                     id: Schema.ID.USER.required(),
+                }),
+                payload: Joi.object({
+                    id: Schema.ID.WALLET.required(),
                 }),
             },
         },
