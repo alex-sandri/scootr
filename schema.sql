@@ -74,6 +74,19 @@ create table "wallets"
     check ("balance" >= 0)
 );
 
+create table "default_wallets"
+(
+    "user" id not null,
+    "wallet" id not null,
+
+    primary key ("user"),
+
+    unique ("wallet"),
+
+    foreign key ("user") references "users" on update cascade on delete cascade,
+    foreign key ("wallet") references "wallets" on update cascade on delete cascade
+);
+
 create table "payment_methods"
 (
     "id" id not null,
@@ -86,6 +99,19 @@ create table "payment_methods"
     foreign key ("wallet") references "wallets" on update cascade on delete cascade,
 
     check ("id" like 'pmt_%')
+);
+
+create table "default_payment_methods"
+(
+    "wallet" id not null,
+    "payment_method" id not null,
+
+    primary key ("wallet"),
+
+    unique ("payment_method"),
+
+    foreign key ("wallet") references "wallets" on update cascade on delete cascade,
+    foreign key ("payment_method") references "payment_methods" on update cascade on delete cascade
 );
 
 create table "vehicles"
