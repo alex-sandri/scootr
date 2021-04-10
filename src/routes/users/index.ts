@@ -29,9 +29,7 @@ export default <ServerRoute[]>[
                 throw Boom.forbidden();
             }
 
-            const user = await User.retrieve(id);
-
-            return user.serialize();
+            return authenticatedUser.serialize();
         },
     },
     {
