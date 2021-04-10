@@ -96,9 +96,6 @@ export default <ServerRoute[]>[
                     id: Schema.ID.USER.required(),
                 }),
             },
-            response: {
-                schema: Wallet.SCHEMA.OBJ,
-            },
         },
         handler: async (request, h) =>
         {
