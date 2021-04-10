@@ -105,12 +105,12 @@ export default <ServerRoute[]>[
         {
             const authenticatedUser = request.auth.credentials.user as User;
 
-            const wallet = await Wallet.retrieve(request.params.id);
-
-            if (authenticatedUser.id !== wallet.user.id)
+            if (authenticatedUser.id !== request.params.id)
             {
                 throw Boom.forbidden();
             }
+
+            const wallet = await Wallet.retrieve((request.payload as any).id);
 
             await authenticatedUser.setDefaultWallet(wallet);
 
