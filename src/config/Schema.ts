@@ -27,6 +27,8 @@ export class Schema
 
     public static readonly FISCAL_NUMBER = Schema.STRING.uppercase().pattern(/^[A-Z]{6}[0-9]{2}[ABCDEHLMPRST][0-9]{2}[A-Z][0-9]{3}[A-Z]$/);
 
+    public static readonly MONEY = Joi.number().min(0).precision(2);
+
     public static readonly LATITUDE = Joi.number().min(-90).max(90);
     public static readonly LONGITUDE = Joi.number().min(-180).max(180);
     public static readonly LOCATION = Joi.object({
