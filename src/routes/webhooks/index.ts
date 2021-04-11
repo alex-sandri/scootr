@@ -39,8 +39,40 @@ export default <ServerRoute[]>[
             {
                 case "charge.succeeded":
                 {
-                    // TODO
-                    // Create balance transaction
+                    const charge = event.data.object as Stripe.Charge;
+
+                    const wallet = await Wallet.retrieve(charge.metadata.wallet_id);
+
+                    /**
+                     * This updates the wallet's balance
+                     * with one atomic operation.
+                     * 
+                     * The second condition ("balance" = $3)
+                     * is set to ensure that if this webhook
+                     * is sent multiple times the balance is
+                     * updated only once.
+                     */
+                    await Database.pool
+                        .query(
+                            `
+                            update "wallets"
+                            set
+                                "balance" = "balance" + $1
+                            where
+                                "id" = $2
+                                and
+                                "balance" = $3
+                            `,
+                            [
+                                charge.amount,
+                                wallet.id,
+                                wallet.balance,
+                            ],
+                        )
+                        .catch(() =>
+                        {
+                            throw Boom.badImplementation();
+                        });
 
                     break;
                 }

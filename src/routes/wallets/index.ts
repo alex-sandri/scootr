@@ -130,6 +130,9 @@ export default <ServerRoute[]>[
                     amount: (request.payload as any).amount,
                     currency: "eur",
                     customer: wallet.stripe_customer_id,
+                    metadata: {
+                        wallet_id: wallet.id,
+                    },
                 })
                 .catch(() =>
                 {
