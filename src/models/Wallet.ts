@@ -12,6 +12,7 @@ interface IDatabaseWallet
     name: string,
     balance: number,
     user: string,
+    stripe_customer_id: string | null,
 }
 
 interface ICreateWallet
@@ -40,6 +41,7 @@ export class Wallet
         private _name: string,
         public readonly balance: number,
         public readonly user: User,
+        public readonly stripe_customer_id: string | null,
     )
     {}
 
@@ -195,6 +197,7 @@ export class Wallet
             data.name,
             data.balance,
             user,
+            data.stripe_customer_id,
         );
     }
 

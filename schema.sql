@@ -44,7 +44,6 @@ create table "users"
     "email" email_address not null,
     "birth_date" date not null,
     "fiscal_number" fiscal_number not null,
-    "stripe_customer_id" text,
 
     primary key ("id"),
 
@@ -63,6 +62,7 @@ create table "wallets"
     "name" varchar(30) not null,
     "balance" numeric(10, 2) not null,
     "user" id not null,
+    "stripe_customer_id" text,
 
     primary key ("id"),
 

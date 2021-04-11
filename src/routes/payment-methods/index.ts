@@ -69,7 +69,7 @@ export default <ServerRoute[]>[
                 throw Boom.forbidden();
             }
 
-            if (!authenticatedUser.stripe_customer_id)
+            if (!wallet.stripe_customer_id)
             {
                 throw Boom.badImplementation();
             }
@@ -78,7 +78,7 @@ export default <ServerRoute[]>[
                 .attach(
                     (request.payload as any).id,
                     {
-                        customer: authenticatedUser.stripe_customer_id,
+                        customer: wallet.stripe_customer_id,
                     },
                 )
                 .catch(() =>
@@ -113,16 +113,21 @@ export default <ServerRoute[]>[
                 throw Boom.forbidden();
             }
 
-            if (!authenticatedUser.stripe_customer_id)
+            if (!wallet.stripe_customer_id)
             {
                 throw Boom.badImplementation();
             }
 
             const paymentMethod = await PaymentMethod.retrieve((request.payload as any).id);
 
+            if (paymentMethod.wallet.id !== wallet.id)
+            {
+                throw Boom.forbidden();
+            }
+
             await Config.STRIPE.customers
                 .update(
-                    authenticatedUser.stripe_customer_id,
+                    wallet.stripe_customer_id,
                     {
                         invoice_settings: {
                             default_payment_method: paymentMethod.stripe_id,

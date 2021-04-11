@@ -1,6 +1,5 @@
 import Boom from "@hapi/boom";
 import Joi from "joi";
-import { Config } from "../config/Config";
 import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
 import { Wallet } from "./Wallet";
@@ -14,7 +13,6 @@ interface IDatabaseUser
     email: string,
     birth_date: Date,
     fiscal_number: string,
-    stripe_customer_id: string | null,
 }
 
 export interface ISerializedUser
@@ -38,7 +36,6 @@ export class User
         private _email: string,
         public readonly birth_date: Date,
         public readonly fiscal_number: string,
-        public readonly stripe_customer_id: string | null,
     )
     {}
 
@@ -69,31 +66,11 @@ export class User
 
     public async delete(): Promise<void>
     {
-        const client = await Database.pool.connect();
-
-        await client.query("begin");
-
-        await client
+        await Database.pool
             .query(
                 `delete from "users" where "id" = $1`,
                 [ this.id, ],
             );
-
-        if (this.stripe_customer_id)
-        {
-            await Config.STRIPE.customers
-                .del(this.stripe_customer_id)
-                .catch(async () =>
-                {
-                    await client.query("rollback");
-    
-                    throw Boom.badImplementation();
-                });
-        }
-
-        await client.query("commit");
-
-        client.release();
     }
 
     ///////////////
@@ -173,7 +150,6 @@ export class User
             data.email,
             data.birth_date,
             data.fiscal_number,
-            data.stripe_customer_id,
         );
     }
 
