@@ -105,7 +105,7 @@ export default <ServerRoute[]>[
                     id: Schema.ID.WALLET.required(),
                 }),
                 payload: Joi.object({
-                    amount: Schema.MONEY.required(),
+                    amount: Schema.MONEY.min(1).required(),
                 }),
             },
         },
