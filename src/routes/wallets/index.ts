@@ -3,6 +3,7 @@ import { ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
 import { Config } from "../../config/Config";
 import { Schema } from "../../config/Schema";
+import { PaymentMethod } from "../../models/PaymentMethod";
 import { User } from "../../models/User";
 import { Wallet } from "../../models/Wallet";
 
@@ -125,11 +126,24 @@ export default <ServerRoute[]>[
                 throw Boom.badImplementation();
             }
 
-            await Config.STRIPE.charges
+            const paymentMethod = await PaymentMethod.retrieveDefault(wallet);
+
+            if (!paymentMethod)
+            {
+                throw Boom.badRequest(undefined, [
+                    {
+                        field: "wallet",
+                        error: "Per ricaricare il portafoglio è necessario prima impostare un metodo di pagamento predefinito",
+                    },
+                ]);
+            }
+
+            const paymentIntent = await Config.STRIPE.paymentIntents
                 .create({
                     amount: (request.payload as any).amount,
                     currency: "eur",
                     customer: wallet.stripe_customer_id,
+                    payment_method: paymentMethod.stripe_id,
                     metadata: {
                         wallet_id: wallet.id,
                     },
@@ -139,7 +153,7 @@ export default <ServerRoute[]>[
                     throw Boom.badImplementation();
                 });
 
-            return h.response();
+            return { client_secret: paymentIntent.client_secret };
         },
     },
     {
