@@ -133,13 +133,18 @@ export class Wallet
     // UTILITIES //
     ///////////////
 
-    public static async retrieveDefault(userId: string): Promise<Wallet>
+    public static async retrieveDefault(userId: string): Promise<Wallet | null>
     {
         const result = await Database.pool
             .query(
                 `select * from "default_wallets" where "user" = $1`,
                 [ userId ],
             );
+
+        if (result.rowCount === 0)
+        {
+            return null;
+        }
 
         return Wallet.deserialize(result.rows[0]);
     }
