@@ -61,7 +61,16 @@ export class PaymentMethod
     {
         const result = await Database.pool
             .query(
-                `select * from "default_payment_methods" where "wallet" = $1`,
+                `
+                select "p".*
+                from
+                    "default_payment_methods" as "dp"
+                    inner join
+                    "payment_methods" as "p"
+                    on "p"."id" = "dp"."payment_method"
+                where
+                    "p"."wallet" = $1
+                `,
                 [ wallet.id ],
             );
 

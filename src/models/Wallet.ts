@@ -135,7 +135,16 @@ export class Wallet
     {
         const result = await Database.pool
             .query(
-                `select * from "default_wallets" where "user" = $1`,
+                `
+                select "w".*
+                from
+                    "default_wallets" as "dw"
+                    inner join
+                    "wallets" as "w"
+                    on "w"."id" = "dw"."wallet"
+                where
+                    "w"."user" = $1
+                `,
                 [ user.id ],
             );
 
