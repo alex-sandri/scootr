@@ -126,7 +126,7 @@ export class PaymentMethod
 
     public static readonly SCHEMA = {
         OBJ: Joi.object({
-            id: Schema.ID.WALLET.required(),
+            id: Schema.ID.PAYMENT_METHOD.required(),
             type: Schema.STRING.required(),
             data: Joi.object().required(),
             wallet: Wallet.SCHEMA.OBJ.required(),
