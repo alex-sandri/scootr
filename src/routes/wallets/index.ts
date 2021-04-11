@@ -89,6 +89,36 @@ export default <ServerRoute[]>[
         },
     },
     {
+        method: "PATCH",
+        path: "/wallets/{id}",
+        options: {
+            validate: {
+                params: Joi.object({
+                    id: Schema.ID.WALLET.required(),
+                }),
+                payload: Wallet.SCHEMA.UPDATE,
+            },
+            response: {
+                schema: Wallet.SCHEMA.OBJ,
+            },
+        },
+        handler: async (request, h) =>
+        {
+            const authenticatedUser = request.auth.credentials.user as User;
+
+            const wallet = await Wallet.retrieve(request.params.id);
+
+            if (authenticatedUser.id !== wallet.user.id)
+            {
+                throw Boom.forbidden();
+            }
+
+            await wallet.update(request.payload as any);
+
+            return wallet.serialize();
+        },
+    },
+    {
         method: "PUT",
         path: "/users/{id}/wallets/default",
         options: {
