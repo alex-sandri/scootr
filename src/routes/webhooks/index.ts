@@ -3,6 +3,7 @@ import { ServerRoute } from "@hapi/hapi";
 import Stripe from "stripe";
 import { Config } from "../../config/Config";
 import Database from "../../utilities/Database";
+import { Utilities } from "../../utilities/Utilities";
 
 export default <ServerRoute[]>[
     {
@@ -45,6 +46,71 @@ export default <ServerRoute[]>[
                                 customer.id,
                                 customer.metadata.user_id,
                             ],
+                        )
+                        .catch(() =>
+                        {
+                            throw Boom.badImplementation();
+                        });
+
+                    break;
+                }
+                case "payment_method.attached":
+                {
+                    const paymentMethod = event.data.object as Stripe.PaymentMethod;
+
+                    if (!paymentMethod.metadata)
+                    {
+                        throw Boom.badImplementation();
+                    }
+
+                    await Database.pool
+                        .query(
+                            `
+                            insert into "payment_methods"
+                                ("id", "type", "data", "wallet", "stripe_id")
+                            values
+                                ($1, $2, $3, $4, $5)
+                            `,
+                            [
+                                Utilities.id(Config.ID_PREFIXES.PAYMENT_METHOD),
+                                paymentMethod.type,
+                                paymentMethod[paymentMethod.type],
+                                paymentMethod.metadata.wallet_id,
+                                paymentMethod.id,
+                            ],
+                        )
+                        .catch(() =>
+                        {
+                            throw Boom.badImplementation();
+                        });
+
+                    break;
+                }
+                case "payment_method.updated":
+                case "payment_method.automatically_updated":
+                {
+                    const paymentMethod = event.data.object as Stripe.PaymentMethod;
+
+                    await Database.pool
+                        .query(
+                            `update "payment_methods" set "data" = $1 where "stripe_id" = $1`,
+                            [ paymentMethod[paymentMethod.type], paymentMethod.id ],
+                        )
+                        .catch(() =>
+                        {
+                            throw Boom.badImplementation();
+                        });
+
+                    break;
+                }
+                case "payment_method.detached":
+                {
+                    const paymentMethod = event.data.object as Stripe.PaymentMethod;
+
+                    await Database.pool
+                        .query(
+                            `delete from "payment_methods" where "stripe_id" = $1`,
+                            [ paymentMethod.id ],
                         )
                         .catch(() =>
                         {
