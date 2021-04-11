@@ -57,6 +57,22 @@ export class PaymentMethod
     // UTILITIES //
     ///////////////
 
+    public static async retrieveWithStripeId(id: string): Promise<PaymentMethod>
+    {
+        const result = await Database.pool
+            .query(
+                `select * from "payment_methods" where "stripe_id" = $1`,
+                [ id ],
+            );
+
+        if (result.rowCount === 0)
+        {
+            throw Boom.notFound();
+        }
+
+        return PaymentMethod.deserialize(result.rows[0]);
+    }
+
     public static async retrieveDefault(wallet: Wallet): Promise<PaymentMethod | null>
     {
         const result = await Database.pool

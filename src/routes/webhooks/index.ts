@@ -2,6 +2,8 @@ import Boom from "@hapi/boom";
 import { ServerRoute } from "@hapi/hapi";
 import Stripe from "stripe";
 import { Config } from "../../config/Config";
+import { PaymentMethod } from "../../models/PaymentMethod";
+import { Wallet } from "../../models/Wallet";
 import Database from "../../utilities/Database";
 import { Utilities } from "../../utilities/Utilities";
 
@@ -51,6 +53,28 @@ export default <ServerRoute[]>[
                         {
                             throw Boom.badImplementation();
                         });
+
+                    break;
+                }
+                case "customer.updated":
+                {
+                    const customer = event.data.object as Stripe.Customer;
+
+                    const wallet = await Wallet.retrieve(customer.metadata.wallet_id);
+
+                    let paymentMethod: PaymentMethod | null = null;
+
+                    if (customer.invoice_settings.default_payment_method !== null)
+                    {
+                        if (typeof customer.invoice_settings.default_payment_method !== "string")
+                        {
+                            throw Boom.badImplementation();
+                        }
+
+                        paymentMethod = await PaymentMethod.retrieveWithStripeId(customer.invoice_settings.default_payment_method);
+                    }
+
+                    await wallet.setDefaultPaymentMethod(paymentMethod);
 
                     break;
                 }
