@@ -37,6 +37,12 @@ export default <ServerRoute[]>[
 
             switch (event.type)
             {
+                case "charge.succeeded":
+                {
+                    // TODO
+
+                    break;
+                }
                 case "customer.created":
                 {
                     const customer = event.data.object as Stripe.Customer;
