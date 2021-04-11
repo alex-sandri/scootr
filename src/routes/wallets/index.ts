@@ -109,6 +109,11 @@ export default <ServerRoute[]>[
                     amount: Schema.MONEY.min(1).required(),
                 }),
             },
+            response: {
+                schema: Joi.object({
+                    client_secret: Schema.STRING.required(),
+                }),
+            },
         },
         handler: async (request, h) =>
         {
