@@ -30,7 +30,12 @@ export default <ServerRoute[]>[
 
             const wallets = await Wallet.forUser(authenticatedUser);
 
-            return wallets.map(wallet => wallet.serialize());
+            return wallets.map(wallet => ({
+                ...wallet.serialize(),
+                __metadata: {
+                    is_default: authenticatedUser.default_wallet?.id === wallet.id,
+                },
+            }));
         },
     },
     {

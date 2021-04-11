@@ -4,6 +4,7 @@ import { Config } from "../config/Config";
 import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
 import { Utilities } from "../utilities/Utilities";
+import { PaymentMethod } from "./PaymentMethod";
 import { ISerializedUser, User } from "./User";
 
 interface IDatabaseWallet
@@ -40,6 +41,7 @@ export class Wallet
         private _name: string,
         public readonly balance: number,
         public readonly user: User,
+        public readonly default_payment_method: PaymentMethod | null,
     )
     {}
 
@@ -165,11 +167,14 @@ export class Wallet
     {
         const user = await User.retrieve(data.user);
 
+        const defaultPaymentMethod = await PaymentMethod.retrieveDefault(data.id);
+
         return new Wallet(
             data.id,
             data.name,
             data.balance,
             user,
+            defaultPaymentMethod,
         );
     }
 
