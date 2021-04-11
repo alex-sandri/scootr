@@ -37,11 +37,11 @@ export default <ServerRoute[]>[
 
             switch (event.type)
             {
-                case "charge.succeeded":
+                case "payment_intent.succeeded":
                 {
-                    const charge = event.data.object as Stripe.Charge;
+                    const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
-                    const wallet = await Wallet.retrieve(charge.metadata.wallet_id);
+                    const wallet = await Wallet.retrieve(paymentIntent.metadata.wallet_id);
 
                     /**
                      * This updates the wallet's balance
@@ -64,7 +64,7 @@ export default <ServerRoute[]>[
                                 "balance" = $3
                             `,
                             [
-                                charge.amount,
+                                paymentIntent.amount,
                                 wallet.id,
                                 wallet.balance,
                             ],
