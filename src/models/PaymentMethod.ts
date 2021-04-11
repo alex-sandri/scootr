@@ -121,6 +121,9 @@ export class PaymentMethod
             type: Schema.STRING.required(),
             data: Joi.object().required(),
             wallet: Wallet.SCHEMA.OBJ.required(),
+            __metadata: Joi.object({
+                is_default: Joi.boolean().required(),
+            }).optional(),
         }),
     } as const;
 }

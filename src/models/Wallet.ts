@@ -204,6 +204,9 @@ export class Wallet
             name: Schema.STRING.max(30).required(),
             balance: Schema.MONEY.required(),
             user: User.SCHEMA.OBJ.required(),
+            __metadata: Joi.object({
+                is_default: Joi.boolean().required(),
+            }).optional(),
         }),
         CREATE: Joi.object({
             name: Schema.STRING.max(30).required(),
