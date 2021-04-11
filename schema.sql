@@ -93,8 +93,11 @@ create table "payment_methods"
     "type" text not null,
     "data" json not null,
     "wallet" id not null,
+    "stripe_id" text not null,
 
     primary key ("id"),
+
+    unique ("stripe_id"),
 
     foreign key ("wallet") references "wallets" on update cascade on delete cascade,
 
