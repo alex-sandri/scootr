@@ -1,6 +1,7 @@
 import Boom from "@hapi/boom";
 import { ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
+import { Config } from "../../config/Config";
 import { Schema } from "../../config/Schema";
 import { User } from "../../models/User";
 import { Wallet } from "../../models/Wallet";
@@ -119,7 +120,21 @@ export default <ServerRoute[]>[
                 throw Boom.forbidden();
             }
 
-            // TODO
+            if (!wallet.stripe_customer_id)
+            {
+                throw Boom.badImplementation();
+            }
+
+            await Config.STRIPE.charges
+                .create({
+                    amount: (request.payload as any).amount,
+                    currency: "eur",
+                    customer: wallet.stripe_customer_id,
+                })
+                .catch(() =>
+                {
+                    throw Boom.badImplementation();
+                });
 
             return h.response();
         },

@@ -40,6 +40,7 @@ export default <ServerRoute[]>[
                 case "charge.succeeded":
                 {
                     // TODO
+                    // Create balance transaction
 
                     break;
                 }
