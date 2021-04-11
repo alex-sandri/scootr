@@ -96,6 +96,35 @@ export default <ServerRoute[]>[
         },
     },
     {
+        method: "POST",
+        path: "/wallets/{id}/funds",
+        options: {
+            validate: {
+                params: Joi.object({
+                    id: Schema.ID.WALLET.required(),
+                }),
+                payload: Joi.object({
+                    amount: Schema.MONEY.required(),
+                }),
+            },
+        },
+        handler: async (request, h) =>
+        {
+            const authenticatedUser = request.auth.credentials.user as User;
+
+            const wallet = await Wallet.retrieve(request.params.id);
+
+            if (authenticatedUser.id !== wallet.user.id)
+            {
+                throw Boom.forbidden();
+            }
+
+            // TODO
+
+            return h.response();
+        },
+    },
+    {
         method: "PATCH",
         path: "/wallets/{id}",
         options: {
