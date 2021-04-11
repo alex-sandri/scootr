@@ -38,7 +38,6 @@ export class User
         private _email: string,
         public readonly birth_date: Date,
         public readonly fiscal_number: string,
-        public readonly default_wallet: Wallet | null,
         public readonly stripe_customer_id: string | null,
     )
     {}
@@ -166,8 +165,6 @@ export class User
 
     private static async deserialize(data: IDatabaseUser): Promise<User>
     {
-        const defaultWallet = await Wallet.retrieveDefault(data.id);
-
         return new User(
             data.id,
             data.type,
@@ -176,7 +173,6 @@ export class User
             data.email,
             data.birth_date,
             data.fiscal_number,
-            defaultWallet,
             data.stripe_customer_id,
         );
     }

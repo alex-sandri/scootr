@@ -34,10 +34,12 @@ export default <ServerRoute[]>[
 
             const paymentMethods = await PaymentMethod.forWallet(wallet);
 
+            const defaultPaymentMethod = await PaymentMethod.retrieveDefault(wallet);
+
             return paymentMethods.map(paymentMethod => ({
                 ...paymentMethod.serialize(),
                 __metadata: {
-                    is_default: wallet.default_payment_method?.id === paymentMethod.id,
+                    is_default: defaultPaymentMethod?.id === paymentMethod.id,
                 },
             }));
         },

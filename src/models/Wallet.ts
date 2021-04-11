@@ -4,7 +4,6 @@ import { Config } from "../config/Config";
 import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
 import { Utilities } from "../utilities/Utilities";
-import { PaymentMethod } from "./PaymentMethod";
 import { ISerializedUser, User } from "./User";
 
 interface IDatabaseWallet
@@ -41,7 +40,6 @@ export class Wallet
         private _name: string,
         public readonly balance: number,
         public readonly user: User,
-        public readonly default_payment_method: PaymentMethod | null,
     )
     {}
 
@@ -133,12 +131,12 @@ export class Wallet
     // UTILITIES //
     ///////////////
 
-    public static async retrieveDefault(userId: string): Promise<Wallet | null>
+    public static async retrieveDefault(user: User): Promise<Wallet | null>
     {
         const result = await Database.pool
             .query(
                 `select * from "default_wallets" where "user" = $1`,
-                [ userId ],
+                [ user.id ],
             );
 
         if (result.rowCount === 0)
@@ -183,14 +181,11 @@ export class Wallet
     {
         const user = await User.retrieve(data.user);
 
-        const defaultPaymentMethod = await PaymentMethod.retrieveDefault(data.id);
-
         return new Wallet(
             data.id,
             data.name,
             data.balance,
             user,
-            defaultPaymentMethod,
         );
     }
 
