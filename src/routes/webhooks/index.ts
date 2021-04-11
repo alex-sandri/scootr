@@ -63,6 +63,8 @@ export default <ServerRoute[]>[
                         throw Boom.badImplementation();
                     }
 
+                    const customer = await Config.STRIPE.customers.retrieve(paymentMethod.customer) as Stripe.Customer;
+
                     await Database.pool
                         .query(
                             `
@@ -75,7 +77,7 @@ export default <ServerRoute[]>[
                                 Utilities.id(Config.ID_PREFIXES.PAYMENT_METHOD),
                                 paymentMethod.type,
                                 paymentMethod[paymentMethod.type],
-                                paymentMethod.customer,
+                                customer.metadata.wallet_id,
                                 paymentMethod.id,
                             ],
                         )
