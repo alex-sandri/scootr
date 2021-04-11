@@ -57,12 +57,12 @@ export class PaymentMethod
     // UTILITIES //
     ///////////////
 
-    public static async retrieveDefault(wallet: Wallet): Promise<PaymentMethod>
+    public static async retrieveDefault(walletId: string): Promise<PaymentMethod>
     {
         const result = await Database.pool
             .query(
                 `select * from "default_payment_methods" where "wallet" = $1`,
-                [ wallet.id ],
+                [ walletId ],
             );
 
         return PaymentMethod.deserialize(result.rows[0]);
