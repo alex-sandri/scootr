@@ -4,6 +4,7 @@ import { Config } from "../config/Config";
 import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
 import { Utilities } from "../utilities/Utilities";
+import { PaymentMethod } from "./PaymentMethod";
 import { ISerializedUser, User } from "./User";
 
 interface IDatabaseWallet
@@ -169,9 +170,38 @@ export class Wallet
         return Promise.all(result.rows.map(Wallet.deserialize));
     }
 
-    public async setDefaultPaymentMethod(paymentMethod: any): Promise<void>
+    public async setDefaultPaymentMethod(paymentMethod: PaymentMethod | null): Promise<void>
     {
-        throw Boom.notImplemented();
+        const client = await Database.pool.connect();
+
+        await client.query("begin");
+
+        await client
+            .query(
+                `delete from "default_payment_methods" where "wallet" = $1`,
+                [ this.id ],
+            )
+            .catch(() =>
+            {
+                throw Boom.badImplementation();
+            });
+
+        if (paymentMethod !== null)
+        {
+            await client
+                .query(
+                    `insert into "default_payment_methods" ("wallet", "payment_method") values ($1, $2)`,
+                    [ this.id, paymentMethod.id ],
+                )
+                .catch(() =>
+                {
+                    throw Boom.badImplementation();
+                });
+        }
+
+        await client.query("commit");
+
+        client.release();
     }
 
     ///////////////////
