@@ -50,7 +50,7 @@ export default <ServerRoute[]>[
         options: {
             validate: {
                 params: Joi.object({
-                    id: Schema.ID.USER.required(),
+                    id: Schema.ID.WALLET.required(),
                 }),
                 payload: Joi.object({
                     // ID of a Stripe Payment Method
