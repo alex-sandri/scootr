@@ -41,10 +41,10 @@ export default <ServerRoute[]>[
 
                     await Database.pool
                         .query(
-                            `update "users" set "stripe_customer_id" = $1 where "id" = $2`,
+                            `update "wallets" set "stripe_customer_id" = $1 where "id" = $2`,
                             [
                                 customer.id,
-                                customer.metadata.user_id,
+                                customer.metadata.wallet_id,
                             ],
                         )
                         .catch(() =>
@@ -58,7 +58,7 @@ export default <ServerRoute[]>[
                 {
                     const paymentMethod = event.data.object as Stripe.PaymentMethod;
 
-                    if (!paymentMethod.metadata)
+                    if (typeof paymentMethod.customer !== "string")
                     {
                         throw Boom.badImplementation();
                     }
@@ -75,7 +75,7 @@ export default <ServerRoute[]>[
                                 Utilities.id(Config.ID_PREFIXES.PAYMENT_METHOD),
                                 paymentMethod.type,
                                 paymentMethod[paymentMethod.type],
-                                paymentMethod.metadata.wallet_id,
+                                paymentMethod.customer,
                                 paymentMethod.id,
                             ],
                         )
