@@ -74,6 +74,15 @@ export default <ServerRoute[]>[
         method: "PATCH",
         path: "/vehicles/{id}",
         options: {
+            auth: {
+                /**
+                 * Only a vehicle can update its properties
+                 * through the API and these are:
+                 * - Battery level
+                 * - Location
+                 */
+                scope: [ "vehicle" ],
+            },
             validate: {
                 params: Joi.object({
                     id: Schema.ID.VEHICLE.required(),
@@ -86,7 +95,16 @@ export default <ServerRoute[]>[
         },
         handler: async (request, h) =>
         {
-            throw Boom.notImplemented();
+            const authenticatedVehicle = request.auth.credentials.user as Vehicle;
+
+            if (authenticatedVehicle.id !== request.params.id)
+            {
+                throw Boom.forbidden();
+            }
+
+            await authenticatedVehicle.update(request.payload as any);
+
+            return authenticatedVehicle.serialize();
         },
     },
     {
