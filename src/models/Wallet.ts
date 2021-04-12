@@ -57,6 +57,16 @@ export class Wallet
 
     public static async create(data: ICreateWallet, user: User): Promise<Wallet>
     {
+        if (await Wallet.existsWithNameAndUser(data.name, user))
+        {
+            throw Boom.conflict(undefined, [
+                {
+                    field: "name",
+                    error: `Un portafoglio con nome '${data.name}' esiste già`,
+                },
+            ]);
+        }
+
         const client = await Database.pool.connect();
 
         await client.query("begin");
@@ -209,6 +219,28 @@ export class Wallet
         }
 
         return Wallet.deserialize(result.rows[0]);
+    }
+
+    public static async existsWithNameAndUser(name: string, user: User): Promise<boolean>
+    {
+        const result = await Database.pool
+            .query(
+                `
+                select count(*) as "count"
+                from "wallets" as "w"
+                where
+                    "name" = $1
+                    and
+                    "user" = $2
+                limit 1
+                `,
+                [
+                    name,
+                    user.id,
+                ],
+            );
+
+        return result.rows[0].count > 0;
     }
 
     public static async forUser(user: User): Promise<Wallet[]>
