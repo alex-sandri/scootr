@@ -66,7 +66,7 @@ create table "wallets"
 
     primary key ("id"),
 
-    unique ("user"),
+    unique ("name", "user"),
 
     foreign key ("user") references "users" on update cascade on delete cascade,
 
