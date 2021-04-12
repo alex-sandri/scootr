@@ -64,7 +64,7 @@ export default <ServerRoute[]>[
                                 "balance" = $3
                             `,
                             [
-                                paymentIntent.amount,
+                                paymentIntent.amount * 100, // Amount is in cents
                                 wallet.id,
                                 wallet.balance,
                             ],

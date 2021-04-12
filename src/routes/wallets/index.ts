@@ -145,7 +145,7 @@ export default <ServerRoute[]>[
 
             const paymentIntent = await Config.STRIPE.paymentIntents
                 .create({
-                    amount: (request.payload as any).amount,
+                    amount: (request.payload as any).amount * 100, // Amount is in cents
                     currency: "eur",
                     customer: wallet.stripe_customer_id,
                     payment_method: paymentMethod.stripe_id,
