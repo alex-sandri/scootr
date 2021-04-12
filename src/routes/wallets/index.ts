@@ -232,7 +232,18 @@ export default <ServerRoute[]>[
         },
         handler: async (request, h) =>
         {
-            throw Boom.notImplemented();
+            const authenticatedUser = request.auth.credentials.user as User;
+
+            const wallet = await Wallet.retrieve(request.params.id);
+
+            if (authenticatedUser.id !== wallet.user.id)
+            {
+                throw Boom.forbidden();
+            }
+
+            await wallet.delete();
+
+            return h.response();
         },
     },
 ];
