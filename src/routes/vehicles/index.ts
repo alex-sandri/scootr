@@ -122,7 +122,11 @@ export default <ServerRoute[]>[
         },
         handler: async (request, h) =>
         {
-            throw Boom.notImplemented();
+            const vehicle = await Vehicle.retrieve(request.params.id);
+
+            await vehicle.delete();
+
+            return h.response();
         },
     },
 ];
