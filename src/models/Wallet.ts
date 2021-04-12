@@ -159,6 +159,11 @@ export class Wallet
 
     public async delete(): Promise<void>
     {
+        if (!this.stripe_customer_id)
+        {
+            throw Boom.badImplementation();
+        }
+
         const client = await Database.pool.connect();
 
         await client.query("begin");
@@ -175,17 +180,14 @@ export class Wallet
                 throw Boom.badImplementation();
             });
 
-        if (this.stripe_customer_id)
-        {
-            await Config.STRIPE.customers
-                .del(this.stripe_customer_id)
-                .catch(async () =>
-                {
-                    await client.query("rollback");
+        await Config.STRIPE.customers
+            .del(this.stripe_customer_id)
+            .catch(async () =>
+            {
+                await client.query("rollback");
 
-                    throw Boom.badImplementation();
-                });
-        }
+                throw Boom.badImplementation();
+            });
 
         await client.query("commit");
 
