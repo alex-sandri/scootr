@@ -57,7 +57,11 @@ export class Wallet
 
     public static async create(data: ICreateWallet, user: User): Promise<Wallet>
     {
-        const result = await Database.pool
+        const client = await Database.pool.connect();
+
+        await client.query("begin");
+
+        const result = await client
             .query(
                 `
                 insert into "wallets"
@@ -73,10 +77,32 @@ export class Wallet
                     user.id,
                 ],
             )
-            .catch(() =>
+            .catch(async () =>
             {
+                await client.query("rollback");
+
                 throw Boom.badRequest();
             });
+
+        await Config.STRIPE.customers
+            .create({
+                name: `${user.first_name} ${user.last_name}`,
+                email: user.email,
+                preferred_locales: [ "it" ],
+                metadata: {
+                    wallet_id: result.rows[0].id,
+                },
+            })
+            .catch(async () =>
+            {
+                await client.query("rollback");
+
+                throw Boom.badImplementation();
+            });
+
+        await client.query("commit");
+
+        client.release();
 
         return Wallet.deserialize(result.rows[0]);
     }
