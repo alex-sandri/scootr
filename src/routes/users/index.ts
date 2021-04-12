@@ -44,7 +44,16 @@ export default <ServerRoute[]>[
         },
         handler: async (request, h) =>
         {
-            throw Boom.notImplemented();
+            const authenticatedUser = request.auth.credentials.user as User;
+
+            if (authenticatedUser.id !== request.params.id)
+            {
+                throw Boom.forbidden();
+            }
+
+            await authenticatedUser.delete();
+
+            return h.response();
         },
     },
 ];
