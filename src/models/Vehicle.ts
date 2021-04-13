@@ -76,7 +76,7 @@ export class Vehicle
                 [
                     id,
                     data.battery_level,
-                    Vehicle.formatLocationForDatabase(data.location),
+                    Utilities.formatLocationForDatabase(data.location),
                 ],
             )
             .catch(() =>
@@ -128,7 +128,7 @@ export class Vehicle
                 `,
                 [
                     this.battery_level,
-                    Vehicle.formatLocationForDatabase(this.location),
+                    Utilities.formatLocationForDatabase(this.location),
                     this.id,
                 ],
             )
@@ -167,25 +167,12 @@ export class Vehicle
                 where st_dwithin("postgis_location", $1, $2)
                 `,
                 [
-                    Vehicle.formatLocationForDatabase(options.location),
+                    Utilities.formatLocationForDatabase(options.location),
                     options.radius,
                 ],
             );
 
         return result.rows.map(Vehicle.deserialize);
-    }
-
-    private static formatLocationForDatabase(location: IVehicleLocation): string
-    {
-        return `srid=4326;point(${location.longitude} ${location.latitude})`;
-    }
-
-    private static parseLocationFromDatabase(location: string): IVehicleLocation
-    {
-        return {
-            latitude: parseFloat(location.split(";")[1]),
-            longitude: parseFloat(location.split(";")[0]),
-        };
     }
 
     ///////////////////
@@ -206,7 +193,7 @@ export class Vehicle
         return new Vehicle(
             data.id,
             data.battery_level,
-            Vehicle.parseLocationFromDatabase(data.location),
+            Utilities.parseLocationFromDatabase(data.location),
         );
     }
 
