@@ -1,5 +1,6 @@
 import Boom from "@hapi/boom";
 import Joi from "joi";
+import { ILocation } from "../common/ILocation";
 import { Config } from "../config/Config";
 import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
@@ -31,8 +32,8 @@ export interface ISerializedRide
     vehicle: ISerializedVehicle,
     start_time: string,
     end_time: string | null,
-    start_location: string,
-    end_location: string | null,
+    start_location: ILocation,
+    end_location: ILocation | null,
 }
 
 export class Ride
