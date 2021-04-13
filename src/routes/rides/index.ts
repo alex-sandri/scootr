@@ -3,6 +3,7 @@ import { ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
 import { Schema } from "../../config/Schema";
 import { Ride } from "../../models/Ride";
+import { User } from "../../models/User";
 
 export default <ServerRoute[]>[
     {
@@ -20,7 +21,16 @@ export default <ServerRoute[]>[
         },
         handler: async (request, h) =>
         {
-            throw Boom.notImplemented();
+            const authenticatedUser = request.auth.credentials.user as User;
+
+            const ride = await Ride.retrieve(request.params.id);
+
+            if (authenticatedUser.id !== ride.user.id)
+            {
+                throw Boom.forbidden();
+            }
+
+            return ride.serialize();
         },
     },
     {
