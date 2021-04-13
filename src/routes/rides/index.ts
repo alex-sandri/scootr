@@ -49,7 +49,11 @@ export default <ServerRoute[]>[
         },
         handler: async (request, h) =>
         {
-            throw Boom.notImplemented();
+            const authenticatedUser = request.auth.credentials.user as User;
+
+            const ride = await Ride.create(request.payload as any, authenticatedUser);
+
+            return ride.serialize();
         },
     },
     {
