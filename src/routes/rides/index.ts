@@ -2,6 +2,7 @@ import Boom from "@hapi/boom";
 import { ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
 import { Schema } from "../../config/Schema";
+import { Ride } from "../../models/Ride";
 
 export default <ServerRoute[]>[
     {
@@ -42,14 +43,13 @@ export default <ServerRoute[]>[
         },
     },
     {
-        method: "PATCH",
-        path: "/rides/{id}",
+        method: "POST",
+        path: "/rides/{id}/end",
         options: {
             validate: {
                 params: Joi.object({
                     id: Schema.ID.RIDE.required(),
                 }),
-                payload: Ride.SCHEMA.UPDATE,
             },
             response: {
                 schema: Ride.SCHEMA.OBJ,
