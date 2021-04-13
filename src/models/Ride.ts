@@ -56,6 +56,8 @@ export class Ride
 
     public static async create(data: ICreateRide, user: User): Promise<Ride>
     {
+        // TODO: Check user has enough balance in wallet to start ride
+
         const result = await Database.pool
             .query(
                 `
@@ -114,6 +116,8 @@ export class Ride
 
     public async end(location: ILocation): Promise<void>
     {
+        // TODO: Charge user
+
         await Database.pool
             .query(
                 `
