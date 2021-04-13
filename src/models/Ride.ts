@@ -22,7 +22,7 @@ interface IDatabaseRide
 interface ICreateRide
 {
     vehicle: string,
-    start_location: string,
+    start_location: ILocation,
 }
 
 export interface ISerializedRide
@@ -45,8 +45,8 @@ export class Ride
         public readonly vehicle: Vehicle,
         public readonly start_time: Date,
         public readonly end_time: Date | null,
-        public readonly start_location: string,
-        public readonly end_location: string | null,
+        public readonly start_location: ILocation,
+        public readonly end_location: ILocation | null,
     )
     {}
 
@@ -140,8 +140,10 @@ export class Ride
             vehicle,
             data.start_time,
             data.end_time,
-            data.start_location,
-            data.end_location,
+            Utilities.parseLocationFromDatabase(data.start_location),
+            data.end_location
+                ? Utilities.parseLocationFromDatabase(data.end_location)
+                : null,
         );
     }
 
