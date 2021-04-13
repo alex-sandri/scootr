@@ -112,6 +112,30 @@ export class Ride
         return Promise.all(result.rows.map(Ride.deserialize));
     }
 
+    public async end(): Promise<void>
+    {
+        await Database.pool
+            .query(
+                `
+                update "rides"
+                set
+                    "end_time" = $1,
+                    "end_location" = $2
+                where
+                    "id" = $3
+                `,
+                [
+                    new Date().toISOString(),
+                    TODO,
+                    this.id,
+                ],
+            )
+            .catch(() =>
+            {
+                throw Boom.badImplementation();
+            });
+    }
+
     ///////////////////
     // SERIALIZATION //
     ///////////////////
