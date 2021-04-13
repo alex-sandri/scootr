@@ -1,5 +1,6 @@
 import Boom from "@hapi/boom";
 import Joi from "joi";
+import { ILocation } from "../common/ILocation";
 import { Config } from "../config/Config";
 import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
@@ -12,29 +13,23 @@ interface IDatabaseVehicle
     location: string,
 }
 
-interface IVehicleLocation
-{
-    latitude: number,
-    longitude: number,
-}
-
 interface ICreateVehicle
 {
     battery_level: number,
-    location: IVehicleLocation,
+    location: ILocation,
 }
 
 interface IUpdateVehicle
 {
     battery_level?: number,
-    location?: IVehicleLocation,
+    location?: ILocation,
 }
 
 export interface ISerializedVehicle
 {
     id: string,
     battery_level: number,
-    location: IVehicleLocation,
+    location: ILocation,
 }
 
 export class Vehicle
@@ -43,7 +38,7 @@ export class Vehicle
     (
         public readonly id: string,
         private _battery_level: number,
-        private _location: IVehicleLocation,
+        private _location: ILocation,
     )
     {}
 
@@ -52,7 +47,7 @@ export class Vehicle
         return this._battery_level;
     }
 
-    public get location(): IVehicleLocation
+    public get location(): ILocation
     {
         return this._location;
     }
@@ -152,7 +147,7 @@ export class Vehicle
     ///////////////
 
     public static async retrieveMultiple(options: {
-        location: IVehicleLocation,
+        location: ILocation,
         /**
          * The radius in meters
          */

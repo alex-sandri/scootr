@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { ILocation } from "../common/ILocation";
 import { Config } from "../config/Config";
 
 export class Utilities
@@ -8,12 +9,12 @@ export class Utilities
         return `${prefix}_${crypto.randomBytes(Config.ID_BYTE_LENGTH).toString("hex")}`;
     }
 
-    public static formatLocationForDatabase(location: { latitude: number, longitude: number }): string
+    public static formatLocationForDatabase(location: ILocation): string
     {
         return `srid=4326;point(${location.longitude} ${location.latitude})`;
     }
 
-    public static parseLocationFromDatabase(location: string): { latitude: number, longitude: number }
+    public static parseLocationFromDatabase(location: string): ILocation
     {
         return {
             latitude: parseFloat(location.split(";")[1]),
