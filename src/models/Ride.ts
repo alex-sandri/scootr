@@ -112,7 +112,7 @@ export class Ride
         return Promise.all(result.rows.map(Ride.deserialize));
     }
 
-    public async end(): Promise<void>
+    public async end(location: ILocation): Promise<void>
     {
         await Database.pool
             .query(
@@ -126,7 +126,7 @@ export class Ride
                 `,
                 [
                     new Date().toISOString(),
-                    TODO,
+                    Utilities.formatLocationForDatabase(location),
                     this.id,
                 ],
             )
