@@ -138,8 +138,8 @@ create table "rides"
     "wallet" id not null,
     "start_time" timestamp not null,
     "end_time" timestamp,
-    "start_location" geography not null,
-    "end_location" geography,
+    "start_location" geography(point, 4326) not null,
+    "end_location" geography(point, 4326),
     "amount" numeric(10, 2),
 
     primary key ("id"),
@@ -165,6 +165,20 @@ create table "sessions"
 
     check ("id" like 'ses_%'),
     check ("expires_at" > current_timestamp)
+);
+
+create table "ride_waypoints"
+(
+    "id" id not null,
+    "ride" id not null,
+    "location" geography(point, 4326) not null,
+    "timestamp" timestamp not null,
+
+    primary key ("id"),
+
+    foreign key ("ride") references "rides" on update cascade on delete cascade,
+
+    check ("id" like 'rwp_%')
 );
 
 -----------
