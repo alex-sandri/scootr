@@ -128,6 +128,7 @@ export default <ServerRoute[]>[
                 }),
                 payload: Joi.object({
                     location: Schema.LOCATION.required(),
+                    timestamp: Schema.DATETIME.required(),
                 }),
             },
         },

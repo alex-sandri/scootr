@@ -1,6 +1,7 @@
 import Boom from "@hapi/boom";
 import { differenceInMinutes } from "date-fns";
 import Joi from "joi";
+import { ILocation } from "../common/ILocation";
 import { Config } from "../config/Config";
 import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
@@ -180,6 +181,28 @@ export class Ride
         }
 
         return Ride.deserialize(result.rows[0]);
+    }
+
+    public async addWaypoint(data: {
+        location: ILocation,
+        timestamp: Date,
+    }): Promise<void>
+    {
+        await Database.pool
+            .query(
+                `
+                insert into "ride_waypoints"
+                    ("id", "ride", "location", "timestamp")
+                values
+                    ($1, $2, $3, $4)
+                `,
+                [
+                    Utilities.id(Config.ID_PREFIXES.RIDE_WAYPOINT),
+                    this.id,
+                    Utilities.formatLocationForDatabase(data.location),
+                    data.timestamp.toISOString(),
+                ],
+            );
     }
 
     public async end(): Promise<void>
