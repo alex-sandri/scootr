@@ -11,7 +11,6 @@ export class Config
         VEHICLE: "vcl",
         RIDE: "rid",
         SESSION: "ses",
-        SIGN_IN_REQUEST: "sir",
     } as const;
 
     public static readonly ID_BYTE_LENGTH = 30;
