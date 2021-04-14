@@ -39,7 +39,7 @@ export default <ServerRoute[]>[
         options: {
             validate: {
                 params: Joi.object({
-                    id: Schema.ID.RIDE.required(),
+                    id: Schema.ID.USER.required(),
                 }),
             },
             response: {
