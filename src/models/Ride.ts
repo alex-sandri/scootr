@@ -1,7 +1,6 @@
 import Boom from "@hapi/boom";
 import { differenceInMinutes } from "date-fns";
 import Joi from "joi";
-import { ILocation } from "../common/ILocation";
 import { Config } from "../config/Config";
 import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
@@ -18,8 +17,6 @@ interface IDatabaseRide
     wallet: string,
     start_time: Date,
     end_time: Date | null,
-    start_location: string,
-    end_location: string | null,
     amount: number | null,
 }
 
@@ -37,8 +34,6 @@ export interface ISerializedRide
     wallet: ISerializedWallet,
     start_time: string,
     end_time: string | null,
-    start_location: ILocation,
-    end_location: ILocation | null,
     amount: number | null,
 }
 
@@ -52,8 +47,6 @@ export class Ride
         public readonly wallet: Wallet,
         public readonly start_time: Date,
         public readonly end_time: Date | null,
-        public readonly start_location: ILocation,
-        public readonly end_location: ILocation | null,
         public readonly amount: number | null,
     )
     {}
@@ -119,9 +112,9 @@ export class Ride
             .query(
                 `
                 insert into "rides"
-                    ("id", "user", "vehicle", "wallet", "start_time", "start_location")
+                    ("id", "user", "vehicle", "wallet", "start_time")
                 values
-                    ($1, $2, $3, $4, $5, $6)
+                    ($1, $2, $3, $4, $5)
                 returning *
                 `,
                 [
@@ -130,7 +123,6 @@ export class Ride
                     data.vehicle,
                     data.wallet,
                     startTime.toISOString(),
-                    vehicle.location,
                 ],
             )
             .catch(() =>
@@ -144,9 +136,7 @@ export class Ride
             vehicle: data.vehicle,
             wallet: data.wallet,
             start_time: startTime,
-            start_location: `${vehicle.location.longitude};${vehicle.location.latitude}`,
             end_time: null,
-            end_location: null,
             amount: null,
         });
     }
@@ -260,8 +250,6 @@ export class Ride
             wallet: this.wallet.serialize(),
             start_time: this.start_time.toISOString(),
             end_time: this.end_time?.toISOString() ?? null,
-            start_location: this.start_location,
-            end_location: this.end_location,
             amount: this.amount,
         };
     }
@@ -279,10 +267,6 @@ export class Ride
             wallet,
             data.start_time,
             data.end_time,
-            Utilities.parseLocationFromDatabase(data.start_location),
-            data.end_location
-                ? Utilities.parseLocationFromDatabase(data.end_location)
-                : null,
             data.amount,
         );
     }
@@ -299,8 +283,6 @@ export class Ride
             wallet: Wallet.SCHEMA.OBJ.required(),
             start_time: Schema.DATETIME.required(),
             end_time: Schema.DATETIME.allow(null).required(),
-            start_location: Schema.LOCATION.required(),
-            end_location: Schema.LOCATION.allow(null).required(),
             amount: Schema.MONEY.allow(null).required(),
         }),
         CREATE: Joi.object({
