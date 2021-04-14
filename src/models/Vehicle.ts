@@ -11,6 +11,7 @@ interface IDatabaseVehicle
     id: string,
     battery_level: number,
     location: string,
+    available: boolean,
 }
 
 interface ICreateVehicle
@@ -30,6 +31,7 @@ export interface ISerializedVehicle
     id: string,
     battery_level: number,
     location: ILocation,
+    available: boolean,
 }
 
 export class Vehicle
@@ -39,6 +41,7 @@ export class Vehicle
         public readonly id: string,
         private _battery_level: number,
         private _location: ILocation,
+        public readonly available: boolean,
     )
     {}
 
@@ -83,6 +86,7 @@ export class Vehicle
             id,
             battery_level: data.battery_level,
             location: `${data.location.longitude};${data.location.latitude}`,
+            available: true,
         });
     }
 
@@ -180,6 +184,7 @@ export class Vehicle
             id: this.id,
             battery_level: this.battery_level,
             location: this.location,
+            available: this.available,
         };
     }
 
@@ -189,6 +194,7 @@ export class Vehicle
             data.id,
             data.battery_level,
             Utilities.parseLocationFromDatabase(data.location),
+            data.available,
         );
     }
 
@@ -201,6 +207,7 @@ export class Vehicle
             id: Schema.ID.VEHICLE.required(),
             battery_level: Joi.number().integer().min(0).max(100).required(),
             location: Schema.LOCATION.required(),
+            available: Joi.boolean().required(),
         }),
         CREATE: Joi.object({
             battery_level: Joi.number().integer().min(0).max(100).required(),
