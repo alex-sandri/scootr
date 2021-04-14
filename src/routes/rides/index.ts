@@ -126,10 +126,17 @@ export default <ServerRoute[]>[
                 params: Joi.object({
                     id: Schema.ID.RIDE.required(),
                 }),
-                payload: Joi.object({
-                    location: Schema.LOCATION.required(),
-                    timestamp: Schema.DATETIME.required(),
-                }),
+                /**
+                 * This route accepts an array because in order
+                 * to reduce network traffic vehicles only send
+                 * updated waypoint data in bulk
+                 */
+                payload: Schema.ARRAY(
+                    Joi.object({
+                        location: Schema.LOCATION.required(),
+                        timestamp: Schema.DATETIME.required(),
+                    }),
+                ),
             },
         },
         handler: async (request, h) =>
@@ -143,7 +150,7 @@ export default <ServerRoute[]>[
                 throw Boom.forbidden();
             }
 
-            await ride.addWaypoint(request.payload as any);
+            await ride.addWaypoints(request.payload as any);
 
             return h.response();
         },
