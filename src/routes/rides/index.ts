@@ -61,9 +61,6 @@ export default <ServerRoute[]>[
                 params: Joi.object({
                     id: Schema.ID.RIDE.required(),
                 }),
-                payload: Joi.object({
-                    location: Schema.LOCATION.required(),
-                }),
             },
             response: {
                 schema: Ride.SCHEMA.OBJ,
@@ -80,7 +77,7 @@ export default <ServerRoute[]>[
                 throw Boom.forbidden();
             }
 
-            await ride.end((request.payload as any).location);
+            await ride.end();
 
             return ride.serialize();
         },

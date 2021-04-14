@@ -182,7 +182,7 @@ export class Ride
         return Promise.all(result.rows.map(Ride.deserialize));
     }
 
-    public async end(location: ILocation): Promise<void>
+    public async end(): Promise<void>
     {
         const endTime = new Date();
 
@@ -224,15 +224,13 @@ export class Ride
                 `
                 update "rides"
                 set
-                    "end_time" = $1,
-                    "end_location" = $2
-                    "amount" = $3
+                    "end_time" = $1
+                    "amount" = $2
                 where
-                    "id" = $4
+                    "id" = $3
                 `,
                 [
                     endTime.toISOString(),
-                    Utilities.formatLocationForDatabase(location),
                     amount,
                     this.id,
                 ],
