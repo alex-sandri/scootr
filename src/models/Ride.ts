@@ -183,26 +183,37 @@ export class Ride
         return Ride.deserialize(result.rows[0]);
     }
 
-    public async addWaypoint(data: {
+    public async addWaypoints(data: {
         location: ILocation,
         timestamp: Date,
-    }): Promise<void>
+    }[]): Promise<void>
     {
-        await Database.pool
-            .query(
-                `
-                insert into "ride_waypoints"
-                    ("id", "ride", "location", "timestamp")
-                values
-                    ($1, $2, $3, $4)
-                `,
-                [
-                    Utilities.id(Config.ID_PREFIXES.RIDE_WAYPOINT),
-                    this.id,
-                    Utilities.formatLocationForDatabase(data.location),
-                    data.timestamp.toISOString(),
-                ],
-            );
+        const client = await Database.pool.connect();
+
+        await client.query("begin");
+
+        await Promise.all(data.map(waypoint =>
+        {
+            return client
+                .query(
+                    `
+                    insert into "ride_waypoints"
+                        ("id", "ride", "location", "timestamp")
+                    values
+                        ($1, $2, $3, $4)
+                    `,
+                    [
+                        Utilities.id(Config.ID_PREFIXES.RIDE_WAYPOINT),
+                        this.id,
+                        Utilities.formatLocationForDatabase(waypoint.location),
+                        waypoint.timestamp.toISOString(),
+                    ],
+                );
+        }));
+
+        await client.query("commit");
+
+        client.release();
     }
 
     public async end(): Promise<void>
