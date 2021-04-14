@@ -242,6 +242,7 @@ export class Ride
         }),
         CREATE: Joi.object({
             vehicle: Schema.ID.VEHICLE.required(),
+            wallet: Schema.ID.WALLET.required(),
             start_location: Schema.LOCATION.required(),
         }),
     } as const;
