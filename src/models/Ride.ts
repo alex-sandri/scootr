@@ -128,7 +128,7 @@ export class Ride
         const chargeAmount = Config.RIDE_FIXED_COST
             + (differenceInMinutes(endTime, this.start_time) * Config.RIDE_COST_PER_MINUTE);
 
-        this.wallet.charge(chargeAmount);
+        await this.wallet.charge(chargeAmount);
 
         await Database.pool
             .query(
