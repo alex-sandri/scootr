@@ -95,7 +95,7 @@ export class Vehicle
         const result = await Database.pool
             .query(
                 `
-                select "id", "battery_level", "location"
+                select "id", "battery_level", "location", "available"
                 from "v_vehicles"
                 where "id" = $1
                 `,
@@ -161,7 +161,7 @@ export class Vehicle
         const result = await Database.pool
             .query(
                 `
-                select "id", "battery_level", "location"
+                select "id", "battery_level", "location", "available"
                 from "v_vehicles"
                 where st_dwithin("postgis_location", $1, $2)
                 `,
