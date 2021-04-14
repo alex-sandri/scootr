@@ -70,8 +70,7 @@ create table "wallets"
 
     foreign key ("user") references "users" on update cascade on delete cascade,
 
-    check ("id" like 'wlt_%'),
-    check ("balance" >= 0)
+    check ("id" like 'wlt_%')
 );
 
 create table "default_wallets"
