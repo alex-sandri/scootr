@@ -80,7 +80,10 @@ export class Ride
             ]);
         }
 
-        const result = await Database.pool
+        const id = Utilities.id(Config.ID_PREFIXES.RIDE);
+        const startTime = new Date();
+
+        await Database.pool
             .query(
                 `
                 insert into "rides"
@@ -90,11 +93,11 @@ export class Ride
                 returning *
                 `,
                 [
-                    Utilities.id(Config.ID_PREFIXES.RIDE),
+                    id,
                     user.id,
                     data.vehicle,
                     data.wallet,
-                    new Date().toISOString(),
+                    startTime.toISOString(),
                     data.start_location,
                 ],
             )
@@ -103,7 +106,17 @@ export class Ride
                 throw Boom.badRequest();
             });
 
-        return Ride.deserialize(result.rows[0]);
+        return Ride.deserialize({
+            id,
+            user: user.id,
+            vehicle: data.vehicle,
+            wallet: data.wallet,
+            start_time: startTime,
+            start_location: `${data.start_location.longitude};${data.start_location.latitude}`,
+            end_time: null,
+            end_location: null,
+            amount: null,
+        });
     }
 
     public static async retrieve(id: string): Promise<Ride>
