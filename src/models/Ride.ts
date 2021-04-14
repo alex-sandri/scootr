@@ -57,21 +57,7 @@ export class Ride
 
     public static async create(data: ICreateRide, user: User): Promise<Ride>
     {
-        const activeRidesResult = await Database.pool
-            .query(
-                `
-                select "id"
-                from "rides"
-                where
-                    "user" = $1
-                    and
-                    "end_time" is null
-                limit 1
-                `,
-                [ user.id ],
-            );
-
-        if (activeRidesResult.rowCount > 0)
+        if (await Ride.retrieveActive(user))
         {
             throw Boom.conflict(undefined, [
                 {
