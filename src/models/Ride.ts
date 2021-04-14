@@ -7,12 +7,14 @@ import Database from "../utilities/Database";
 import { Utilities } from "../utilities/Utilities";
 import { ISerializedUser, User } from "./User";
 import { ISerializedVehicle, Vehicle } from "./Vehicle";
+import { ISerializedWallet, Wallet } from "./Wallet";
 
 interface IDatabaseRide
 {
     id: string,
     user: string,
     vehicle: string,
+    wallet: string,
     start_time: Date,
     end_time: Date | null,
     start_location: string,
@@ -22,6 +24,7 @@ interface IDatabaseRide
 interface ICreateRide
 {
     vehicle: string,
+    wallet: string,
     start_location: ILocation,
 }
 
@@ -30,6 +33,7 @@ export interface ISerializedRide
     id: string,
     user: ISerializedUser,
     vehicle: ISerializedVehicle,
+    wallet: ISerializedWallet,
     start_time: string,
     end_time: string | null,
     start_location: ILocation,
@@ -43,6 +47,7 @@ export class Ride
         public readonly id: string,
         public readonly user: User,
         public readonly vehicle: Vehicle,
+        public readonly wallet: Wallet,
         public readonly start_time: Date,
         public readonly end_time: Date | null,
         public readonly start_location: ILocation,
@@ -62,15 +67,16 @@ export class Ride
             .query(
                 `
                 insert into "rides"
-                    ("id", "user", "vehicle", "start_time", "start_location")
+                    ("id", "user", "vehicle", "wallet", "start_time", "start_location")
                 values
-                    ($1, $2, $3, $4, $5)
+                    ($1, $2, $3, $4, $5, $6)
                 returning *
                 `,
                 [
                     Utilities.id(Config.ID_PREFIXES.RIDE),
                     user.id,
                     data.vehicle,
+                    data.wallet,
                     new Date().toISOString(),
                     data.start_location,
                 ],
@@ -150,6 +156,7 @@ export class Ride
             id: this.id,
             user: this.user.serialize(),
             vehicle: this.vehicle.serialize(),
+            wallet: this.wallet.serialize(),
             start_time: this.start_time.toISOString(),
             end_time: this.end_time?.toISOString() ?? null,
             start_location: this.start_location,
@@ -161,11 +168,13 @@ export class Ride
     {
         const user = await User.retrieve(data.user);
         const vehicle = await Vehicle.retrieve(data.vehicle);
+        const wallet = await Wallet.retrieve(data.wallet);
 
         return new Ride(
             data.id,
             user,
             vehicle,
+            wallet,
             data.start_time,
             data.end_time,
             Utilities.parseLocationFromDatabase(data.start_location),
