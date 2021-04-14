@@ -70,10 +70,26 @@ export class User
 
         await client.query("begin");
 
+        const balanceResult = await client
+            .query(
+                `
+                select sum("balance") as "balance"
+                from "wallets"
+                where "user" = $1
+                `,
+                [ this.id ],
+            )
+            .catch(async () =>
+            {
+                await client.query("rollback");
+
+                throw Boom.badImplementation();
+            });
+
         await client
             .query(
                 `delete from "users" where "id" = $1`,
-                [ this.id, ],
+                [ this.id ],
             )
             .catch(async () =>
             {
@@ -92,7 +108,7 @@ export class User
                 `,
                 [
                     this.fiscal_number,
-                    "TODO",
+                    balanceResult.rows[0].balance,
                     new Date().toISOString(),
                 ],
             )
