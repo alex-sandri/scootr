@@ -181,6 +181,23 @@ create table "ride_waypoints"
     check ("id" like 'rwp_%')
 );
 
+/*
+    This is used to keep track of all the users
+    that signed up in order to prevent fraud,
+    for example deleting an account with negative
+    balance to avoid paying it back or signing up
+    again to receive discounts or bonuses previously
+    already redeemed
+*/
+create table "old_users"
+(
+    "fiscal_number" fiscal_number not null,
+    "balance" numeric(10, 2) not null,
+    "deleted_at" timestamp not null,
+
+    check ("deleted_at" <= current_timestamp)
+);
+
 -----------
 -- VIEWS --
 -----------
