@@ -179,6 +179,20 @@ as
         "location" as "postgis_location"
     from "vehicles";
 
+create view "v_rides"
+as
+    select
+        "id",
+        "user",
+        "vehicle",
+        "wallet",
+        "start_time",
+        "end_time",
+        st_x("start_location"::text) || ';' || st_y("start_location"::text) as "start_location",
+        st_x("end_location"::text) || ';' || st_y("end_location"::text) as "end_location",
+        "amount"
+    from "rides";
+
 ------------------
 -- INITIAL DATA --
 ------------------
