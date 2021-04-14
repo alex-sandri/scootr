@@ -57,6 +57,11 @@ export default <ServerRoute[]>[
 
             const ride = await Ride.retrieveActive(authenticatedUser);
 
+            if (!ride)
+            {
+                return null;
+            }
+
             return ride.serialize();
         },
     },
