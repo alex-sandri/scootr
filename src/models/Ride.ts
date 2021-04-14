@@ -128,9 +128,37 @@ export class Ride
         const chargeAmount = Config.RIDE_FIXED_COST
             + (differenceInMinutes(endTime, this.start_time) * Config.RIDE_COST_PER_MINUTE);
 
-        await this.wallet.charge(chargeAmount);
+        if (chargeAmount < 0)
+        {
+            throw Boom.forbidden();
+        }
 
-        await Database.pool
+        const client = await Database.pool.connect();
+
+        await client.query("begin");
+
+        await client
+            .query(
+                `
+                update "wallets"
+                set
+                    "balance" = "balance" - $1
+                where
+                    "id" = $2
+                `,
+                [
+                    chargeAmount,
+                    this.wallet.id,
+                ],
+            )
+            .catch(async () =>
+            {
+                await client.query("rollback");
+
+                throw Boom.badImplementation();
+            });
+
+        await client
             .query(
                 `
                 update "rides"
@@ -146,10 +174,16 @@ export class Ride
                     this.id,
                 ],
             )
-            .catch(() =>
+            .catch(async () =>
             {
+                await client.query("rollback");
+
                 throw Boom.badImplementation();
             });
+
+        await client.query("commit");
+
+        client.release();
     }
 
     ///////////////////
