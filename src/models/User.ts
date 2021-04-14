@@ -66,11 +66,46 @@ export class User
 
     public async delete(): Promise<void>
     {
-        await Database.pool
+        const client = await Database.pool.connect();
+
+        await client.query("begin");
+
+        await client
             .query(
                 `delete from "users" where "id" = $1`,
                 [ this.id, ],
-            );
+            )
+            .catch(async () =>
+            {
+                await client.query("rollback");
+
+                throw Boom.badImplementation();
+            });
+
+        await client
+            .query(
+                `
+                insert into "old_users"
+                    ("fiscal_number", "balance", "deleted_at")
+                values
+                    ($1, $2, $3)
+                `,
+                [
+                    this.fiscal_number,
+                    "TODO",
+                    new Date().toISOString(),
+                ],
+            )
+            .catch(async () =>
+            {
+                await client.query("rollback");
+
+                throw Boom.badImplementation();
+            });
+
+        await client.query("commit");
+
+        client.release();
     }
 
     ///////////////
