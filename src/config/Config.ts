@@ -11,6 +11,7 @@ export class Config
         VEHICLE: "vcl",
         RIDE: "rid",
         SESSION: "ses",
+        RIDE_WAYPOINT: "rwp",
     } as const;
 
     public static readonly ID_BYTE_LENGTH = 30;
