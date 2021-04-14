@@ -163,7 +163,7 @@ export class Ride
         const result = await Database.pool
             .query(
                 `
-                select "id"
+                select *
                 from "rides"
                 where
                     "user" = $1
