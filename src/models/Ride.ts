@@ -27,7 +27,6 @@ interface ICreateRide
 {
     vehicle: string,
     wallet: string,
-    start_location: ILocation,
 }
 
 export interface ISerializedRide
@@ -68,6 +67,7 @@ export class Ride
         // TODO
         // Check that user has no active rides
 
+        const vehicle = await Vehicle.retrieve(data.vehicle);
         const wallet = await Wallet.retrieve(data.wallet);
 
         if (wallet.balance < Config.WALLET_MIN_BALANCE_TO_START_RIDE)
@@ -98,7 +98,7 @@ export class Ride
                     data.vehicle,
                     data.wallet,
                     startTime.toISOString(),
-                    data.start_location,
+                    vehicle.location,
                 ],
             )
             .catch(() =>
@@ -112,7 +112,7 @@ export class Ride
             vehicle: data.vehicle,
             wallet: data.wallet,
             start_time: startTime,
-            start_location: `${data.start_location.longitude};${data.start_location.latitude}`,
+            start_location: `${vehicle.location.longitude};${vehicle.location.latitude}`,
             end_time: null,
             end_location: null,
             amount: null,
@@ -276,7 +276,6 @@ export class Ride
         CREATE: Joi.object({
             vehicle: Schema.ID.VEHICLE.required(),
             wallet: Schema.ID.WALLET.required(),
-            start_location: Schema.LOCATION.required(),
         }),
     } as const;
 }
