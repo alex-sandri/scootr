@@ -4,6 +4,7 @@ import Joi from "joi";
 import { Schema } from "../../config/Schema";
 import { Ride } from "../../models/Ride";
 import { User } from "../../models/User";
+import { Vehicle } from "../../models/Vehicle";
 
 export default <ServerRoute[]>[
     {
@@ -112,6 +113,38 @@ export default <ServerRoute[]>[
             await ride.end();
 
             return ride.serialize();
+        },
+    },
+    {
+        method: "POST",
+        path: "/rides/{id}/waypoints",
+        options: {
+            auth: {
+                scope: [ "vehicle" ],
+            },
+            validate: {
+                params: Joi.object({
+                    id: Schema.ID.RIDE.required(),
+                }),
+                payload: Joi.object({
+                    location: Schema.LOCATION.required(),
+                }),
+            },
+        },
+        handler: async (request, h) =>
+        {
+            const authenticatedVehicle = request.auth.credentials.user as Vehicle;
+
+            const ride = await Ride.retrieve(request.params.id);
+
+            if (authenticatedVehicle.id !== ride.vehicle.id)
+            {
+                throw Boom.forbidden();
+            }
+
+            await ride.addWaypoint(request.payload as any);
+
+            return h.response();
         },
     },
 ];
