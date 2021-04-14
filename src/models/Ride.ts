@@ -20,6 +20,7 @@ interface IDatabaseRide
     end_time: Date | null,
     start_location: string,
     end_location: string | null,
+    amount: number | null,
 }
 
 interface ICreateRide
@@ -39,6 +40,7 @@ export interface ISerializedRide
     end_time: string | null,
     start_location: ILocation,
     end_location: ILocation | null,
+    amount: number | null,
 }
 
 export class Ride
@@ -53,6 +55,7 @@ export class Ride
         public readonly end_time: Date | null,
         public readonly start_location: ILocation,
         public readonly end_location: ILocation | null,
+        public readonly amount: number | null,
     )
     {}
 
@@ -216,6 +219,7 @@ export class Ride
             end_time: this.end_time?.toISOString() ?? null,
             start_location: this.start_location,
             end_location: this.end_location,
+            amount: this.amount,
         };
     }
 
@@ -236,6 +240,7 @@ export class Ride
             data.end_location
                 ? Utilities.parseLocationFromDatabase(data.end_location)
                 : null,
+            data.amount,
         );
     }
 
@@ -248,10 +253,12 @@ export class Ride
             id: Schema.ID.RIDE.required(),
             user: User.SCHEMA.OBJ.required(),
             vehicle: Vehicle.SCHEMA.OBJ.required(),
+            wallet: Wallet.SCHEMA.OBJ.required(),
             start_time: Schema.DATETIME.required(),
             end_time: Schema.DATETIME.allow(null).required(),
             start_location: Schema.LOCATION.required(),
             end_location: Schema.LOCATION.allow(null).required(),
+            amount: Schema.MONEY.allow(null).required(),
         }),
         CREATE: Joi.object({
             vehicle: Schema.ID.VEHICLE.required(),
