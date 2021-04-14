@@ -62,6 +62,9 @@ export class Ride
 
     public static async create(data: ICreateRide, user: User): Promise<Ride>
     {
+        // TODO
+        // Check that user has no active rides
+
         const wallet = await Wallet.retrieve(data.wallet);
 
         if (wallet.balance < Config.WALLET_MIN_BALANCE_TO_START_RIDE)
