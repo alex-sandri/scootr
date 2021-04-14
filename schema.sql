@@ -176,6 +176,8 @@ create table "ride_waypoints"
 
     primary key ("id"),
 
+    unique ("ride", "timestamp"),
+
     foreign key ("ride") references "rides" on update cascade on delete cascade,
 
     check ("id" like 'rwp_%')
