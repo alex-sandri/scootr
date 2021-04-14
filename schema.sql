@@ -138,8 +138,6 @@ create table "rides"
     "wallet" id not null,
     "start_time" timestamp not null,
     "end_time" timestamp,
-    "start_location" geography(point, 4326) not null,
-    "end_location" geography(point, 4326),
     "amount" numeric(10, 2),
 
     primary key ("id"),
