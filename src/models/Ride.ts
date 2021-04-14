@@ -172,6 +172,30 @@ export class Ride
         return Promise.all(result.rows.map(Ride.deserialize));
     }
 
+    public static async retrieveActive(user: User): Promise<Ride | null>
+    {
+        const result = await Database.pool
+            .query(
+                `
+                select "id"
+                from "rides"
+                where
+                    "user" = $1
+                    and
+                    "end_time" is null
+                limit 1
+                `,
+                [ user.id ],
+            );
+
+        if (result.rowCount === 0)
+        {
+            return null;
+        }
+
+        return Ride.deserialize(result.rows[0]);
+    }
+
     public async end(): Promise<void>
     {
         const endTime = new Date();
