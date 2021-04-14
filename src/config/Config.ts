@@ -23,6 +23,9 @@ export class Config
      */
     public static readonly SESSION_DURATION = 60 * 60 * 24 * 30;
 
+    public static readonly RIDE_FIXED_COST = 1;
+    public static readonly RIDE_COST_PER_MINUTE = 0.2;
+
     public static readonly STRIPE = new Stripe(process.env.STRIPE_SECRET_API_KEY ?? "", { apiVersion: "2020-08-27" });
 
     public static readonly API_HOST = Config.IS_PRODUCTION

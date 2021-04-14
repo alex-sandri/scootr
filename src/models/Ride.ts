@@ -1,4 +1,5 @@
 import Boom from "@hapi/boom";
+import { differenceInMinutes } from "date-fns";
 import Joi from "joi";
 import { ILocation } from "../common/ILocation";
 import { Config } from "../config/Config";
@@ -122,7 +123,12 @@ export class Ride
 
     public async end(location: ILocation): Promise<void>
     {
-        // TODO: Charge user
+        const endTime = new Date();
+
+        const chargeAmount = Config.RIDE_FIXED_COST
+            + (differenceInMinutes(endTime, this.start_time) * Config.RIDE_COST_PER_MINUTE);
+
+        this.wallet.charge(chargeAmount);
 
         await Database.pool
             .query(
@@ -135,7 +141,7 @@ export class Ride
                     "id" = $3
                 `,
                 [
-                    new Date().toISOString(),
+                    endTime.toISOString(),
                     Utilities.formatLocationForDatabase(location),
                     this.id,
                 ],
