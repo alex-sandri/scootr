@@ -134,6 +134,7 @@ create table "rides"
     "id" id not null,
     "user" id not null,
     "vehicle" id not null,
+    "wallet" id not null,
     "start_time" timestamp not null,
     "end_time" timestamp,
     "start_location" geography not null,
@@ -143,6 +144,7 @@ create table "rides"
 
     foreign key ("user") references "users" on update cascade on delete cascade,
     foreign key ("vehicle") references "vehicles" on update cascade on delete cascade,
+    foreign key ("wallet") references "wallets" on update cascade on delete cascade,
 
     check ("id" like 'rid_%'),
     check ("start_time" <= "end_time")
