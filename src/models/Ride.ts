@@ -145,7 +145,7 @@ export class Ride
     {
         const result = await Database.pool
             .query(
-                `select * from "v_rides" where "id" = $1`,
+                `select * from "rides" where "id" = $1`,
                 [ id ],
             );
 
