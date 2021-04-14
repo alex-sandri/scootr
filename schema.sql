@@ -122,6 +122,7 @@ create table "vehicles"
     "id" id not null,
     "battery_level" int not null,
     "location" geography(point, 4326) not null, -- https://epsg.io/4326
+    "available" boolean not null default true,
 
     primary key ("id"),
 
@@ -176,7 +177,8 @@ as
         "id",
         "battery_level",
         st_x("location"::text) || ';' || st_y("location"::text) as "location",
-        "location" as "postgis_location"
+        "location" as "postgis_location",
+        "available"
     from "vehicles";
 
 create view "v_rides"
