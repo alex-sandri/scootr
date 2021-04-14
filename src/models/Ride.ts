@@ -224,7 +224,7 @@ export class Ride
                 `
                 update "rides"
                 set
-                    "end_time" = $1
+                    "end_time" = $1,
                     "amount" = $2
                 where
                     "id" = $3
