@@ -89,6 +89,17 @@ export class Ride
         }
 
         const vehicle = await Vehicle.retrieve(data.vehicle);
+
+        if (!vehicle.available)
+        {
+            throw Boom.conflict(undefined, [
+                {
+                    field: "ride",
+                    error: "Il veicolo selezionato non è al momento disponibile",
+                },
+            ]);
+        }
+
         const wallet = await Wallet.retrieve(data.wallet);
 
         if (wallet.balance < Config.WALLET_MIN_BALANCE_TO_START_RIDE)
