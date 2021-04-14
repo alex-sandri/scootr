@@ -62,7 +62,17 @@ export class Ride
 
     public static async create(data: ICreateRide, user: User): Promise<Ride>
     {
-        // TODO: Check user has enough balance in wallet to start ride
+        const wallet = await Wallet.retrieve(data.wallet);
+
+        if (wallet.balance < Config.WALLET_MIN_BALANCE_TO_START_RIDE)
+        {
+            throw Boom.forbidden(undefined, [
+                {
+                    field: "wallet",
+                    error: `Non è possibile utilizzare il portafoglio '${wallet.name}' in quanto non ha saldo a sufficienza (minimo ${Config.WALLET_MIN_BALANCE_TO_START_RIDE}€)`,
+                },
+            ]);
+        }
 
         const result = await Database.pool
             .query(
