@@ -125,10 +125,10 @@ export class Ride
     {
         const endTime = new Date();
 
-        const chargeAmount = Config.RIDE_FIXED_COST
+        const amount = Config.RIDE_FIXED_COST
             + (differenceInMinutes(endTime, this.start_time) * Config.RIDE_COST_PER_MINUTE);
 
-        if (chargeAmount < 0)
+        if (amount < Config.RIDE_FIXED_COST)
         {
             throw Boom.forbidden();
         }
@@ -147,7 +147,7 @@ export class Ride
                     "id" = $2
                 `,
                 [
-                    chargeAmount,
+                    amount,
                     this.wallet.id,
                 ],
             )
@@ -165,12 +165,14 @@ export class Ride
                 set
                     "end_time" = $1,
                     "end_location" = $2
+                    "amount" = $3
                 where
-                    "id" = $3
+                    "id" = $4
                 `,
                 [
                     endTime.toISOString(),
                     Utilities.formatLocationForDatabase(location),
+                    amount,
                     this.id,
                 ],
             )
