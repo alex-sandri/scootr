@@ -34,6 +34,7 @@ export interface ISerializedRide
     wallet: ISerializedWallet,
     start_time: string,
     end_time: string | null,
+    amount: number | null,
 }
 
 export class Ride
@@ -46,6 +47,7 @@ export class Ride
         public readonly wallet: Wallet,
         public readonly start_time: Date,
         public readonly end_time: Date | null,
+        public readonly amount: number | null,
     )
     {}
 
@@ -288,6 +290,7 @@ export class Ride
             wallet: this.wallet.serialize(),
             start_time: this.start_time.toISOString(),
             end_time: this.end_time?.toISOString() ?? null,
+            amount: this.amount,
         };
     }
 
@@ -297,6 +300,8 @@ export class Ride
         const vehicle = await Vehicle.retrieve(data.vehicle);
         const wallet = await Wallet.retrieve(data.wallet);
 
+        const amount = 0; // TODO
+
         return new Ride(
             data.id,
             user,
@@ -304,6 +309,7 @@ export class Ride
             wallet,
             data.start_time,
             data.end_time,
+            amount,
         );
     }
 

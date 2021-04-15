@@ -11,7 +11,6 @@ interface IDatabaseWallet
 {
     id: string,
     name: string,
-    balance: number,
     user: string,
     stripe_customer_id: string | null,
 }
@@ -308,10 +307,12 @@ export class Wallet
     {
         const user = await User.retrieve(data.user);
 
+        const balance = 0; // TODO
+
         return new Wallet(
             data.id,
             data.name,
-            data.balance,
+            balance,
             user,
             data.stripe_customer_id,
         );

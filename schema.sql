@@ -60,7 +60,6 @@ create table "wallets"
 (
     "id" id not null,
     "name" varchar(30) not null,
-    "balance" numeric(10, 2) not null,
     "user" id not null,
     "stripe_customer_id" text,
 
