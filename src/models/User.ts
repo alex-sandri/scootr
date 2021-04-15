@@ -73,9 +73,14 @@ export class User
         const balanceResult = await client
             .query(
                 `
-                select sum("balance") as "balance"
-                from "wallets"
-                where "user" = $1
+                select coalesce(sum("amount"), 0) as "balance"
+                from
+                    "transactions" as "t"
+                    inner join
+                    "wallets" as "w"
+                    on "t"."wallet" = "w"."id"
+                where
+                    "w"."user" = $1
                 `,
                 [ this.id ],
             )
