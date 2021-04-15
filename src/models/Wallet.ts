@@ -74,15 +74,14 @@ export class Wallet
             .query(
                 `
                 insert into "wallets"
-                    ("id", "name", "balance", "user")
+                    ("id", "name", "user")
                 values
-                    ($1, $2, $3, $4)
+                    ($1, $2, $3)
                 returning *
                 `,
                 [
                     Utilities.id(Config.ID_PREFIXES.WALLET),
                     data.name,
-                    0,
                     user.id,
                 ],
             )
