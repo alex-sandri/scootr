@@ -233,15 +233,16 @@ export class Ride
         await client
             .query(
                 `
-                update "wallets"
-                set
-                    "balance" = "balance" - $1
-                where
-                    "id" = $2
+                insert into "transactions"
+                    ("id", "amount", "wallet", "reason", "external_id")
+                values
+                    ($1, $2, $3, 'ride', $4)
                 `,
                 [
-                    amount,
+                    Utilities.id(Config.ID_PREFIXES.TRANSACTION),
+                    -amount, // This is a debit transaction so it must be negative
                     this.wallet.id,
+                    this.id,
                 ],
             )
             .catch(async () =>
