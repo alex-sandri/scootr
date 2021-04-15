@@ -300,7 +300,18 @@ export class Ride
         const vehicle = await Vehicle.retrieve(data.vehicle);
         const wallet = await Wallet.retrieve(data.wallet);
 
-        const amount = 0; // TODO
+        const amountResult = await Database.pool
+            .query(
+                `
+                select "amount"
+                from "transactions"
+                where
+                    "reason" = 'ride'
+                    and
+                    "external_id" = $2
+                `,
+                [ data.id ],
+            );
 
         return new Ride(
             data.id,
@@ -309,7 +320,7 @@ export class Ride
             wallet,
             data.start_time,
             data.end_time,
-            amount,
+            amountResult.rows[0].amount,
         );
     }
 
