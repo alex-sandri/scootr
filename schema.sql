@@ -207,7 +207,7 @@ create table "transactions"
     "id" id not null,
     "amount" numeric(10, 2) not null,
     "timestamp" timestamp not null,
-    "user" id not null,
+    "wallet" id not null,
     "reason" text not null,
     /*
         This can reference (specified in "reason"):
@@ -220,6 +220,7 @@ create table "transactions"
 
     unique ("external_id"),
 
+    foreign key ("wallet") references "wallets" on update cascade on delete cascade,
     foreign key ("reason") references "transaction_reasons" on update cascade on delete cascade,
 
     check ("id" like 'trx_%')
