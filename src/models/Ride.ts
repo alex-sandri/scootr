@@ -314,6 +314,13 @@ export class Ride
                 [ data.id ],
             );
 
+        let amount: number | null = null;
+
+        if (amountResult.rows[0]?.amount)
+        {
+            amount = Math.abs(amountResult.rows[0].amount);
+        }
+
         return new Ride(
             data.id,
             user,
@@ -321,7 +328,7 @@ export class Ride
             wallet,
             data.start_time,
             data.end_time,
-            amountResult.rows[0]?.amount ?? null,
+            amount,
         );
     }
 
@@ -337,7 +344,7 @@ export class Ride
             wallet: Wallet.SCHEMA.OBJ.required(),
             start_time: Schema.DATETIME.required(),
             end_time: Schema.DATETIME.allow(null).required(),
-            amount: Schema.MONEY.allow(null).required(),
+            amount: Schema.MONEY.positive().allow(null).required(),
         }),
         CREATE: Joi.object({
             vehicle: Schema.ID.VEHICLE.required(),
