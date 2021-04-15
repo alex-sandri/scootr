@@ -137,7 +137,6 @@ create table "rides"
     "wallet" id not null,
     "start_time" timestamp not null,
     "end_time" timestamp,
-    "amount" numeric(10, 2),
 
     primary key ("id"),
 
@@ -146,8 +145,7 @@ create table "rides"
     foreign key ("wallet") references "wallets" on update cascade on delete cascade,
 
     check ("id" like 'rid_%'),
-    check ("start_time" <= "end_time"),
-    check ("amount" > 0)
+    check ("start_time" <= "end_time")
 );
 
 create table "sessions"
