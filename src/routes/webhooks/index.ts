@@ -41,32 +41,19 @@ export default <ServerRoute[]>[
                 {
                     const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
-                    const wallet = await Wallet.retrieve(paymentIntent.metadata.wallet_id);
-
-                    /**
-                     * This updates the wallet's balance
-                     * with one atomic operation.
-                     * 
-                     * The second condition ("balance" = $3)
-                     * is set to ensure that if this webhook
-                     * is sent multiple times the balance is
-                     * updated only once.
-                     */
                     await Database.pool
                         .query(
                             `
-                            update "wallets"
-                            set
-                                "balance" = "balance" + $1
-                            where
-                                "id" = $2
-                                and
-                                "balance" = $3
+                            insert into "transactions"
+                                ("id", "amount", "wallet", "reason", "external_id")
+                            values
+                                ($1, $2, $3, 'credit', $4)
                             `,
                             [
+                                Utilities.id(Config.ID_PREFIXES.TRANSACTION),
                                 paymentIntent.amount / 100, // Amount is in cents
-                                wallet.id,
-                                wallet.balance,
+                                paymentIntent.metadata.wallet_id,
+                                paymentIntent.id,
                             ],
                         )
                         .catch(() =>
