@@ -309,7 +309,7 @@ export class Ride
                 where
                     "reason" = 'ride'
                     and
-                    "external_id" = $2
+                    "external_id" = $1
                 `,
                 [ data.id ],
             );
@@ -321,7 +321,7 @@ export class Ride
             wallet,
             data.start_time,
             data.end_time,
-            amountResult.rows[0].amount,
+            amountResult.rows[0]?.amount ?? null,
         );
     }
 
