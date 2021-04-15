@@ -307,12 +307,20 @@ export class Wallet
     {
         const user = await User.retrieve(data.user);
 
-        const balance = 0; // TODO
+        const balanceResult = await Database.pool
+            .query(
+                `
+                select coalesce(sum("amount"), 0) as "balance"
+                from "transactions"
+                where "wallet" = $1
+                `,
+                [ data.id ],
+            );
 
         return new Wallet(
             data.id,
             data.name,
-            balance,
+            balanceResult.rows[0].balance,
             user,
             data.stripe_customer_id,
         );
