@@ -18,7 +18,6 @@ interface IDatabaseRide
     wallet: string,
     start_time: Date,
     end_time: Date | null,
-    amount: number | null,
 }
 
 interface ICreateRide
@@ -35,7 +34,6 @@ export interface ISerializedRide
     wallet: ISerializedWallet,
     start_time: string,
     end_time: string | null,
-    amount: number | null,
 }
 
 export class Ride
@@ -48,7 +46,6 @@ export class Ride
         public readonly wallet: Wallet,
         public readonly start_time: Date,
         public readonly end_time: Date | null,
-        public readonly amount: number | null,
     )
     {}
 
@@ -124,7 +121,6 @@ export class Ride
             wallet: data.wallet,
             start_time: startTime,
             end_time: null,
-            amount: null,
         });
     }
 
@@ -258,14 +254,12 @@ export class Ride
                 `
                 update "rides"
                 set
-                    "end_time" = $1,
-                    "amount" = $2
+                    "end_time" = $1
                 where
-                    "id" = $3
+                    "id" = $2
                 `,
                 [
                     endTime.toISOString(),
-                    amount,
                     this.id,
                 ],
             )
@@ -294,7 +288,6 @@ export class Ride
             wallet: this.wallet.serialize(),
             start_time: this.start_time.toISOString(),
             end_time: this.end_time?.toISOString() ?? null,
-            amount: this.amount,
         };
     }
 
@@ -311,7 +304,6 @@ export class Ride
             wallet,
             data.start_time,
             data.end_time,
-            data.amount,
         );
     }
 
