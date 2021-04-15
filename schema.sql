@@ -197,6 +197,36 @@ create table "old_users"
     check ("deleted_at" <= current_timestamp)
 );
 
+create table "transaction_reasons"
+(
+    "id" text not null,
+
+    primary key ("id")
+);
+
+create table "transactions"
+(
+    "id" id not null,
+    "amount" numeric(10, 2) not null,
+    "timestamp" timestamp not null,
+    "user" id not null,
+    "reason" text not null,
+    /*
+        This can reference (specified in "reason"):
+        - A ride if this is the charge transaction after the ride has ended
+        - A Stripe Payment Intent if this is a transaction to add funds to a wallet
+    */
+    "external_id" text not null,
+
+    primary key ("id"),
+
+    unique ("external_id"),
+
+    foreign key ("reason") references "transaction_reasons" on update cascade on delete cascade,
+
+    check ("id" like 'trx_%')
+);
+
 -----------
 -- VIEWS --
 -----------
@@ -218,3 +248,7 @@ as
 insert into "user_types" values
     ('admin'),
     ('user');
+
+insert into "transaction_reasons" values
+    ('ride'),
+    ('credit');
