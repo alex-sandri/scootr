@@ -36,6 +36,33 @@ export default <ServerRoute[]>[
     },
     {
         method: "GET",
+        path: "/users/{id}/rides",
+        options: {
+            validate: {
+                params: Joi.object({
+                    id: Schema.ID.USER.required(),
+                }),
+            },
+            response: {
+                schema: Schema.ARRAY(Ride.SCHEMA.OBJ),
+            },
+        },
+        handler: async (request, h) =>
+        {
+            const authenticatedUser = request.auth.credentials.user as User;
+
+            if (authenticatedUser.id !== request.params.id)
+            {
+                throw Boom.forbidden();
+            }
+
+            const rides = await Ride.forUser(authenticatedUser);
+
+            return rides.map(_ => _.serialize());
+        },
+    },
+    {
+        method: "GET",
         path: "/users/{id}/rides/active",
         options: {
             validate: {
