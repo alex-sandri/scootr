@@ -107,6 +107,7 @@ export default <ServerRoute[]>[
                 }),
                 payload: Joi.object({
                     amount: Schema.MONEY.min(1).required(),
+                    is_subscription: Joi.boolean().required(),
                 }),
             },
             response: {
@@ -143,22 +144,34 @@ export default <ServerRoute[]>[
                 ]);
             }
 
-            const paymentIntent = await Config.STRIPE.paymentIntents
-                .create({
-                    amount: (request.payload as any).amount * 100, // Amount is in cents
-                    currency: "eur",
-                    customer: wallet.stripe_customer_id,
-                    payment_method: paymentMethod.stripe_id,
-                    metadata: {
-                        wallet_id: wallet.id,
-                    },
-                })
-                .catch(() =>
-                {
-                    throw Boom.badImplementation();
-                });
+            const payload: {
+                amount: number,
+                is_subscription: boolean
+            } = (request.payload as any);
 
-            return { client_secret: paymentIntent.client_secret };
+            payload.amount *= 100; // Amount is in cents
+
+            if (!payload.is_subscription)
+            {
+                const paymentIntent = await Config.STRIPE.paymentIntents
+                    .create({
+                        amount: payload.amount,
+                        currency: "eur",
+                        customer: wallet.stripe_customer_id,
+                        payment_method: paymentMethod.stripe_id,
+                        metadata: {
+                            wallet_id: wallet.id,
+                        },
+                    })
+                    .catch(() =>
+                    {
+                        throw Boom.badImplementation();
+                    });
+
+                return { client_secret: paymentIntent.client_secret };
+            }
+
+            throw Boom.notImplemented();
         },
     },
     {
