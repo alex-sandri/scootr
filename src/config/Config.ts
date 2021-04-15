@@ -12,6 +12,7 @@ export class Config
         RIDE: "rid",
         SESSION: "ses",
         RIDE_WAYPOINT: "rwp",
+        TRANSACTION: "trx",
     } as const;
 
     public static readonly ID_BYTE_LENGTH = 30;
