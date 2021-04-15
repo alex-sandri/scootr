@@ -205,7 +205,7 @@ create table "transactions"
 (
     "id" id not null,
     "amount" numeric(10, 2) not null,
-    "timestamp" timestamp not null,
+    "timestamp" timestamp not null default current_timestamp,
     "wallet" id not null,
     "reason" text not null,
     /*
@@ -222,7 +222,8 @@ create table "transactions"
     foreign key ("wallet") references "wallets" on update cascade on delete cascade,
     foreign key ("reason") references "transaction_reasons" on update cascade on delete cascade,
 
-    check ("id" like 'trx_%')
+    check ("id" like 'trx_%'),
+    check ("timestamp" <= current_timestamp)
 );
 
 -----------
