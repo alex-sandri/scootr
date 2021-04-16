@@ -226,6 +226,26 @@ create table "transactions"
     check ("timestamp" <= current_timestamp)
 );
 
+create table "subscriptions"
+(
+    "id" id not null,
+    "amount" numeric(10, 2) not null,
+    "wallet" id not null,
+    "status" text not null,
+    "current_period_end" timestamp not null,
+    "cancel_at_period_end" boolean not null,
+    "deleted" boolean not null,
+    "stripe_subscription_id" text not null,
+
+    primary key ("id"),
+
+    unique ("stripe_subscription_id"),
+
+    foreign key ("wallet") references "wallets" on update cascade on delete cascade,
+
+    check ("id" like 'sub_%')
+);
+
 -----------
 -- VIEWS --
 -----------
