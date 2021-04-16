@@ -86,7 +86,7 @@ export class RideWaypoint
 
     public static readonly SCHEMA = {
         OBJ: Joi.object({
-            id: Schema.ID.RIDE.required(),
+            id: Schema.ID.RIDE_WAYPOINT.required(),
             ride: Ride.SCHEMA.OBJ.required(),
             location: Schema.LOCATION.required(),
             timestamp: Schema.DATETIME.required(),
