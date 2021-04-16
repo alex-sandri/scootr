@@ -80,31 +80,159 @@ export default <ServerRoute[]>[
                 }
                 case "customer.subscription.created":
                 {
-                    
+                    const subscription = event.data.object as Stripe.Subscription;
+
+                    if (!subscription.items.data[0].price.unit_amount)
+                    {
+                        throw Boom.badImplementation();
+                    }
+
+                    await Database.pool
+                        .query(
+                            `
+                            insert into "subscriptions"
+                                ("id", "amount", "wallet", "status", "current_period_end", "cancel_at_period_end", "deleted", "stripe_subscription_id")
+                            values
+                                ($1, $2, $3, $4, $5, $6, false, $8)
+                            `,
+                            [
+                                Utilities.id(Config.ID_PREFIXES.SUBSCRIPTION),
+                                subscription.items.data[0].price.unit_amount / 100,
+                                subscription.metadata.wallet_id,
+                                subscription.status,
+                                new Date(subscription.current_period_end * 1000).toISOString(),
+                                subscription.cancel_at_period_end,
+                                subscription.id,
+                            ],
+                        )
+                        .catch(() =>
+                        {
+                            throw Boom.badImplementation();
+                        });
 
                     break;
                 }
                 case "customer.subscription.deleted":
                 {
-                    
+                    const subscription = event.data.object as Stripe.Subscription;
+
+                    await Database.pool
+                        .query(
+                            `
+                            update "subscriptions"
+                            set
+                                "status" = $1,
+                                "deleted" = true
+                            where
+                                "stripe_subscription_id" = $2
+                            `,
+                            [
+                                subscription.status,
+                                subscription.id,
+                            ],
+                        )
+                        .catch(() =>
+                        {
+                            throw Boom.badImplementation();
+                        });
 
                     break;
                 }
                 case "customer.subscription.updated":
                 {
-                    
+                    const subscription = event.data.object as Stripe.Subscription;
+
+                    await Database.pool
+                        .query(
+                            `
+                            update "subscriptions"
+                            set
+                                "status" = $1,
+                                "cancel_at_period_end" = $2
+                            where
+                                "stripe_subscription_id" = $3
+                            `,
+                            [
+                                subscription.status,
+                                subscription.cancel_at_period_end,
+                                subscription.id,
+                            ],
+                        )
+                        .catch(() =>
+                        {
+                            throw Boom.badImplementation();
+                        });
 
                     break;
                 }
                 case "invoice.paid":
                 {
-                    
+                    const invoice = event.data.object as Stripe.Invoice;
+
+                    if (typeof invoice.subscription !== "string")
+                    {
+                        throw Boom.badImplementation();
+                    }
+
+                    const subscription = await Config.STRIPE.subscriptions
+                        .retrieve(invoice.subscription)
+                        .catch(() =>
+                        {
+                            throw Boom.badImplementation();
+                        });
+
+                    await Database.pool
+                        .query(
+                            `
+                            update "subscriptions"
+                            set
+                                "current_period_end" = $1,
+                                "cancel_at_period_end" = $2
+                            where
+                                "stripe_subscription_id" = $3
+                            `,
+                            [
+                                new Date(subscription.current_period_end * 1000).toISOString(),
+                                subscription.cancel_at_period_end,
+                                subscription.id,
+                            ],
+                        )
+                        .catch(() =>
+                        {
+                            throw Boom.badImplementation();
+                        });
 
                     break;
                 }
                 case "invoice.payment_failed":
                 {
-                    
+                    const invoice = event.data.object as Stripe.Invoice;
+
+                    if (typeof invoice.subscription !== "string")
+                    {
+                        throw Boom.badImplementation();
+                    }
+
+                    const subscription = await Config.STRIPE.subscriptions.retrieve(invoice.subscription);
+
+                    await Database.pool
+                        .query(
+                            `
+                            update "subscriptions"
+                            set
+                                "status" = $1
+                            where
+                                "stripe_subscription_id" = $2
+                            `,
+                            [
+                                subscription.status,
+                                subscription.id,
+                            ],
+                        )
+                        .catch(() =>
+                        {
+                            throw Boom.badImplementation();
+                        });
 
                     break;
                 }
