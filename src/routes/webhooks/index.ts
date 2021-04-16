@@ -93,7 +93,7 @@ export default <ServerRoute[]>[
                             insert into "subscriptions"
                                 ("id", "amount", "wallet", "status", "current_period_end", "cancel_at_period_end", "deleted", "stripe_subscription_id")
                             values
-                                ($1, $2, $3, $4, $5, $6, false, $8)
+                                ($1, $2, $3, $4, $5, $6, false, $7)
                             `,
                             [
                                 Utilities.id(Config.ID_PREFIXES.SUBSCRIPTION),
