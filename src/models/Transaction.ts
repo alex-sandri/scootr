@@ -100,7 +100,7 @@ export class Transaction
 
     public static readonly SCHEMA = {
         OBJ: Joi.object({
-            id: Schema.ID.RIDE_WAYPOINT.required(),
+            id: Schema.ID.TRANSACTION.required(),
             amount: Schema.MONEY.required(),
             timestamp: Schema.DATETIME.required(),
             wallet: Wallet.SCHEMA.OBJ.required(),
