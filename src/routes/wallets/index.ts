@@ -151,7 +151,7 @@ export default <ServerRoute[]>[
                 }),
                 payload: Joi.object({
                     amount: Schema.MONEY.min(1).required(),
-                    is_subscription: Joi.boolean().required(),
+                    is_subscription: Schema.BOOLEAN.required(),
                 }),
             },
         },

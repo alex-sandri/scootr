@@ -46,4 +46,6 @@ export class Schema
     });
 
     public static readonly ARRAY = (type: BaseJoi.SchemaLikeWithoutArray) => Joi.array().items(type);
+
+    public static readonly BOOLEAN = Joi.boolean();
 }

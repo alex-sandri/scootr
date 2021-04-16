@@ -207,7 +207,7 @@ export class Vehicle
             id: Schema.ID.VEHICLE.required(),
             battery_level: Joi.number().integer().min(0).max(100).required(),
             location: Schema.LOCATION.required(),
-            available: Joi.boolean().required(),
+            available: Schema.BOOLEAN.required(),
         }),
         CREATE: Joi.object({
             battery_level: Joi.number().integer().min(0).max(100).required(),

@@ -2,6 +2,7 @@ import Boom from "@hapi/boom";
 import { ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
 import { Schema } from "../../config/Schema";
+import { Subscription } from "../../models/Subscription";
 import { User } from "../../models/User";
 import { Wallet } from "../../models/Wallet";
 
