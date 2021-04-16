@@ -91,7 +91,7 @@ export default <ServerRoute[]>[
                         .query(
                             `
                             insert into "subscriptions"
-                                ("id", "amount", "wallet", "status", "current_period_end", "cancel_at_period_end", "deleted", "stripe_subscription_id")
+                                ("id", "amount", "wallet", "status", "current_period_end", "cancel_at_period_end", "deleted", "stripe_id")
                             values
                                 ($1, $2, $3, $4, $5, $6, false, $7)
                             `,
@@ -124,7 +124,7 @@ export default <ServerRoute[]>[
                                 "status" = $1,
                                 "deleted" = true
                             where
-                                "stripe_subscription_id" = $2
+                                "stripe_id" = $2
                             `,
                             [
                                 subscription.status,
@@ -150,7 +150,7 @@ export default <ServerRoute[]>[
                                 "status" = $1,
                                 "cancel_at_period_end" = $2
                             where
-                                "stripe_subscription_id" = $3
+                                "stripe_id" = $3
                             `,
                             [
                                 subscription.status,
@@ -189,7 +189,7 @@ export default <ServerRoute[]>[
                                 "current_period_end" = $1,
                                 "cancel_at_period_end" = $2
                             where
-                                "stripe_subscription_id" = $3
+                                "stripe_id" = $3
                             `,
                             [
                                 new Date(subscription.current_period_end * 1000).toISOString(),
@@ -222,7 +222,7 @@ export default <ServerRoute[]>[
                             set
                                 "status" = $1
                             where
-                                "stripe_subscription_id" = $2
+                                "stripe_id" = $2
                             `,
                             [
                                 subscription.status,
