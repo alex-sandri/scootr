@@ -171,7 +171,31 @@ export default <ServerRoute[]>[
                 return { client_secret: paymentIntent.client_secret };
             }
 
-            throw Boom.notImplemented();
+            await Config.STRIPE.subscriptions
+                .create({
+                    customer: wallet.stripe_customer_id,
+                    items: [
+                        {
+                            price_data: {
+                                unit_amount: payload.amount,
+                                currency: "eur",
+                                product: process.env.STRIPE_RECURRING_CREDIT_PRODUCT_ID ?? "",
+                                recurring: {
+                                    interval: "month",
+                                },
+                            },
+                        },
+                    ],
+                    metadata: {
+                        wallet_id: wallet.id,
+                    },
+                })
+                .catch(() =>
+                {
+                    throw Boom.badImplementation();
+                });
+
+            return h.response();
         },
     },
     {
