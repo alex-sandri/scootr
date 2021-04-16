@@ -2,6 +2,7 @@ import Boom from "@hapi/boom";
 import { ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
 import { Schema } from "../../config/Schema";
+import { Transaction } from "../../models/Transaction";
 
 export default <ServerRoute[]>[
     {
