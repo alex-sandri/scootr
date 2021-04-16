@@ -110,7 +110,7 @@ export class Subscription
 
     public static readonly SCHEMA = {
         OBJ: Joi.object({
-            id: Schema.ID.TRANSACTION.required(),
+            id: Schema.ID.SUBSCRIPTION.required(),
             amount: Schema.MONEY.required(),
             wallet: Wallet.SCHEMA.OBJ.required(),
             status: Schema.STRING.required(),
