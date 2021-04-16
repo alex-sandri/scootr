@@ -37,32 +37,6 @@ export default <ServerRoute[]>[
 
             switch (event.type)
             {
-                case "payment_intent.succeeded":
-                {
-                    const paymentIntent = event.data.object as Stripe.PaymentIntent;
-
-                    await Database.pool
-                        .query(
-                            `
-                            insert into "transactions"
-                                ("id", "amount", "wallet", "reason", "external_id")
-                            values
-                                ($1, $2, $3, 'credit', $4)
-                            `,
-                            [
-                                Utilities.id(Config.ID_PREFIXES.TRANSACTION),
-                                paymentIntent.amount / 100, // Amount is in cents
-                                paymentIntent.metadata.wallet_id,
-                                paymentIntent.id,
-                            ],
-                        )
-                        .catch(() =>
-                        {
-                            throw Boom.badImplementation();
-                        });
-
-                    break;
-                }
                 case "customer.created":
                 {
                     const customer = event.data.object as Stripe.Customer;
@@ -101,6 +75,62 @@ export default <ServerRoute[]>[
                     }
 
                     await wallet.setDefaultPaymentMethod(paymentMethod);
+
+                    break;
+                }
+                case "customer.subscription.created":
+                {
+                    
+
+                    break;
+                }
+                case "customer.subscription.deleted":
+                {
+                    
+
+                    break;
+                }
+                case "customer.subscription.updated":
+                {
+                    
+
+                    break;
+                }
+                case "invoice.paid":
+                {
+                    
+
+                    break;
+                }
+                case "invoice.payment_failed":
+                {
+                    
+
+                    break;
+                }
+                case "payment_intent.succeeded":
+                {
+                    const paymentIntent = event.data.object as Stripe.PaymentIntent;
+
+                    await Database.pool
+                        .query(
+                            `
+                            insert into "transactions"
+                                ("id", "amount", "wallet", "reason", "external_id")
+                            values
+                                ($1, $2, $3, 'credit', $4)
+                            `,
+                            [
+                                Utilities.id(Config.ID_PREFIXES.TRANSACTION),
+                                paymentIntent.amount / 100, // Amount is in cents
+                                paymentIntent.metadata.wallet_id,
+                                paymentIntent.id,
+                            ],
+                        )
+                        .catch(() =>
+                        {
+                            throw Boom.badImplementation();
+                        });
 
                     break;
                 }
