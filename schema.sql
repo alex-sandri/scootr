@@ -240,6 +240,15 @@ as
         "available"
     from "vehicles";
 
+create view "v_ride_waypoints"
+as
+    select
+        "id",
+        "ride",
+        st_x("location"::text) || ';' || st_y("location"::text) as "location",
+        "timestamp"
+    from "ride_waypoints";
+
 ------------------
 -- INITIAL DATA --
 ------------------
