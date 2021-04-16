@@ -235,11 +235,11 @@ create table "subscriptions"
     "current_period_end" timestamp not null,
     "cancel_at_period_end" boolean not null,
     "deleted" boolean not null,
-    "stripe_subscription_id" text not null,
+    "stripe_id" text not null,
 
     primary key ("id"),
 
-    unique ("stripe_subscription_id"),
+    unique ("stripe_id"),
 
     foreign key ("wallet") references "wallets" on update cascade on delete cascade,
 
