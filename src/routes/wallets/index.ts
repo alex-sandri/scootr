@@ -70,6 +70,50 @@ export default <ServerRoute[]>[
         },
     },
     {
+        method: "GET",
+        path: "/wallets/{id}/stripe/billing-portal",
+        options: {
+            validate: {
+                params: Joi.object({
+                    id: Schema.ID.WALLET.required(),
+                }),
+            },
+            response: {
+                schema: Joi.object({
+                    url: Schema.URL.required(),
+                }),
+            },
+        },
+        handler: async (request, h) =>
+        {
+            const authenticatedUser = request.auth.credentials.user as User;
+
+            const wallet = await Wallet.retrieve(request.params.id);
+
+            if (authenticatedUser.id !== wallet.user.id)
+            {
+                throw Boom.forbidden();
+            }
+
+            if (!wallet.stripe_customer_id)
+            {
+                throw Boom.badImplementation();
+            }
+
+            const { url } = await Config.STRIPE.billingPortal
+                .sessions
+                .create({
+                    customer: wallet.stripe_customer_id,
+                })
+                .catch(() =>
+                {
+                    throw Boom.badImplementation();
+                });
+
+            return { url };
+        },
+    },
+    {
         method: "POST",
         path: "/users/{id}/wallets",
         options: {

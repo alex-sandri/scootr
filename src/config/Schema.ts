@@ -22,6 +22,15 @@ export class Schema
 
     public static readonly EMAIL = Schema.STRING.email();
 
+    public static readonly URL = Schema.STRING.uri({
+        scheme: "https",
+        domain: {
+            tlds: {
+                allow: true,
+            },
+        },
+    });
+
     public static readonly DATE = Joi.date().utc().format("YYYY-MM-DD");
     public static readonly DATETIME = Joi.date().utc().format("YYYY-MM-DDTHH:mm:ss.SSSZ");
 
