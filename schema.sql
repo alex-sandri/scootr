@@ -211,7 +211,7 @@ create table "transactions"
     /*
         This can reference (specified in "reason"):
         - A ride if this is the charge transaction after the ride has ended
-        - A Stripe Payment Intent if this is a transaction to add funds to a wallet
+        - A Stripe Payment Intent if this is a transaction to add funds to a wallet (either recurring or not)
     */
     "external_id" text not null,
 
@@ -279,4 +279,5 @@ insert into "user_types" values
 
 insert into "transaction_reasons" values
     ('ride'),
-    ('credit');
+    ('credit')
+    ('credit-recurring');
