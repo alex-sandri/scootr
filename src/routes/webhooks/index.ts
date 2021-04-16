@@ -240,18 +240,23 @@ export default <ServerRoute[]>[
                 {
                     const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
+                    const isSubscription = paymentIntent.invoice !== null;
+
                     await Database.pool
                         .query(
                             `
                             insert into "transactions"
                                 ("id", "amount", "wallet", "reason", "external_id")
                             values
-                                ($1, $2, $3, 'credit', $4)
+                                ($1, $2, $3, $4, $5)
                             `,
                             [
                                 Utilities.id(Config.ID_PREFIXES.TRANSACTION),
                                 paymentIntent.amount / 100, // Amount is in cents
                                 paymentIntent.metadata.wallet_id,
+                                isSubscription
+                                    ? "subscription"
+                                    : "credit",
                                 paymentIntent.id,
                             ],
                         )
