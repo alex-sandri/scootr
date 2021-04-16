@@ -3,6 +3,7 @@ import { ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
 import { Schema } from "../../config/Schema";
 import { Ride } from "../../models/Ride";
+import { RideWaypoint } from "../../models/RideWaypoint";
 import { User } from "../../models/User";
 import { Vehicle } from "../../models/Vehicle";
 
@@ -32,6 +33,35 @@ export default <ServerRoute[]>[
             }
 
             return ride.serialize();
+        },
+    },
+    {
+        method: "GET",
+        path: "/rides/{id}/waypoints",
+        options: {
+            validate: {
+                params: Joi.object({
+                    id: Schema.ID.RIDE.required(),
+                }),
+            },
+            response: {
+                schema: Schema.ARRAY(RideWaypoint.SCHEMA.OBJ),
+            },
+        },
+        handler: async (request, h) =>
+        {
+            const authenticatedUser = request.auth.credentials.user as User;
+
+            const ride = await Ride.retrieve(request.params.id);
+
+            if (authenticatedUser.id !== ride.user.id)
+            {
+                throw Boom.forbidden();
+            }
+
+            const waypoints = await RideWaypoint.forRide(ride);
+
+            return waypoints.map(_ => _.serialize());
         },
     },
     {
