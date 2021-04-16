@@ -13,10 +13,6 @@ interface IDatabaseRideWaypoint
     timestamp: Date,
 }
 
-interface ICreateRideWaypoint
-{
-}
-
 export interface ISerializedRideWaypoint
 {
     id: string,
@@ -39,11 +35,6 @@ export class RideWaypoint
     //////////
     // CRUD //
     //////////
-
-    public static async create(data: ICreateRideWaypoint): Promise<RideWaypoint>
-    {
-        
-    }
 
     ///////////////
     // UTILITIES //
@@ -101,7 +92,8 @@ export class RideWaypoint
             timestamp: Schema.DATETIME.required(),
         }),
         CREATE: Joi.object({
-            
+            location: Schema.LOCATION.required(),
+            timestamp: Schema.DATETIME.required(),
         }),
     } as const;
 }

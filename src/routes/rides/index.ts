@@ -188,12 +188,7 @@ export default <ServerRoute[]>[
                  * to reduce network traffic vehicles only send
                  * updated waypoint data in bulk
                  */
-                payload: Schema.ARRAY(
-                    Joi.object({
-                        location: Schema.LOCATION.required(),
-                        timestamp: Schema.DATETIME.required(),
-                    }),
-                ),
+                payload: Schema.ARRAY(RideWaypoint.SCHEMA.CREATE),
             },
         },
         handler: async (request, h) =>
