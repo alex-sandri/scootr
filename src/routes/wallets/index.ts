@@ -110,11 +110,6 @@ export default <ServerRoute[]>[
                     is_subscription: Joi.boolean().required(),
                 }),
             },
-            response: {
-                schema: Joi.object({
-                    client_secret: Schema.STRING.required(),
-                }),
-            },
         },
         handler: async (request, h) =>
         {
