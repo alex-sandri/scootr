@@ -246,6 +246,21 @@ create table "subscriptions"
     check ("id" like 'sub_%')
 );
 
+create table "request_logs"
+(
+    "remote_address" text not null,
+    "method" text not null,
+    "path" text not null,
+    "timestamp" timestamp not null,
+    "status_code" int not null,
+    "user" id, -- no FK to keep logs even after a user is deleted
+
+    primary key ("remote_address", "method", "path", "timestamp"),
+
+    check ("method" = upper("method")),
+    check ("timestamp" <= current_timestamp)
+);
+
 -----------
 -- VIEWS --
 -----------
