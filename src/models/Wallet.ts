@@ -312,7 +312,7 @@ export class Wallet
                 select count(*) as "count"
                 from "subscriptions"
                 where
-                    "user" = $1
+                    "wallet" = $1
                     and
                     "status" = 'active'
                 `,
