@@ -175,7 +175,12 @@ export default <ServerRoute[]>[
                 && await paymentMethod.wallet.hasActiveSubscriptions()
             )
             {
-                throw Boom.forbidden();
+                throw Boom.forbidden(undefined, [
+                    {
+                        field: "wallet",
+                        error: "Non è possibile eliminare il metodo di pagamento predefinito quando sono attive una o più ricariche periodiche",
+                    },
+                ]);
             }
 
             await Config.STRIPE.paymentMethods
