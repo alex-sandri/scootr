@@ -49,6 +49,33 @@ const init = async () =>
 {
     Database.init();
 
+    await server.register({
+        plugin: require("hapi-rate-limit"),
+        options: {
+            enabled: true,
+            userLimit: 100,
+            userCache: {
+                expiresIn: 60 * 1000,
+            },
+            userAttribute: "id",
+            addressOnly: false,
+            pathLimit: false,
+            pathCache: {
+                expiresIn: 60 * 1000,
+            },
+            userPathLimit: 50,
+            userPathCache: {
+                expiresIn: 60 * 1000,
+            },
+            headers: true,
+            limitExceededResponse: () =>
+            {
+                return Boom.tooManyRequests();
+            },
+            authLimit: 5,
+        },
+    });
+
     server.auth.scheme("token", () =>
     {
         return {
