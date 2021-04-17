@@ -196,6 +196,22 @@ export class Wallet
     // UTILITIES //
     ///////////////
 
+    public static async retrieveWithStripeCustomerId(id: string): Promise<Wallet>
+    {
+        const result = await Database.pool
+            .query(
+                `select * from "wallets" where "stripe_customer_id" = $1`,
+                [ id ],
+            );
+
+        if (result.rowCount === 0)
+        {
+            throw Boom.notFound();
+        }
+
+        return Wallet.deserialize(result.rows[0]);
+    }
+
     public static async retrieveDefault(user: User): Promise<Wallet | null>
     {
         const result = await Database.pool

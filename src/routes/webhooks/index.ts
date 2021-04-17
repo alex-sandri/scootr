@@ -240,7 +240,14 @@ export default <ServerRoute[]>[
                 {
                     const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
+                    if (typeof paymentIntent.customer !== "string")
+                    {
+                        throw Boom.badImplementation();
+                    }
+
                     const isSubscription = paymentIntent.invoice !== null;
+
+                    const wallet = await Wallet.retrieveWithStripeCustomerId(paymentIntent.customer);
 
                     await Database.pool
                         .query(
@@ -253,7 +260,7 @@ export default <ServerRoute[]>[
                             [
                                 Utilities.id(Config.ID_PREFIXES.TRANSACTION),
                                 paymentIntent.amount / 100, // Amount is in cents
-                                paymentIntent.metadata.wallet_id,
+                                wallet.id,
                                 isSubscription
                                     ? "subscription"
                                     : "credit",
