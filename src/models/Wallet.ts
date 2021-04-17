@@ -310,8 +310,11 @@ export class Wallet
             .query(
                 `
                 select count(*) as "count"
-                from "v_active_subscriptions"
-                where "user" = $1
+                from "subscriptions"
+                where
+                    "user" = $1
+                    and
+                    "status" = 'active'
                 `,
                 [ this.id ],
             );
