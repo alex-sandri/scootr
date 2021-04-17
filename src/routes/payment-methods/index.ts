@@ -163,6 +163,21 @@ export default <ServerRoute[]>[
                 throw Boom.forbidden();
             }
 
+            const defaultPaymentMethod = await PaymentMethod.retrieveDefault(paymentMethod.wallet);
+
+            /**
+             * The default payment method cannot be deleted if
+             * the user has at least one active subscription
+             */
+            if
+            (
+                defaultPaymentMethod?.id === paymentMethod.id
+                && await paymentMethod.wallet.hasActiveSubscriptions()
+            )
+            {
+                throw Boom.forbidden();
+            }
+
             await Config.STRIPE.paymentMethods
                 .detach(paymentMethod.stripe_id)
                 .catch(() =>
