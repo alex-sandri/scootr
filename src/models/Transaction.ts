@@ -20,6 +20,7 @@ export interface ISerializedTransaction
     timestamp: string,
     wallet: ISerializedWallet,
     reason: string,
+    external_id: string,
 }
 
 export class Transaction
@@ -77,6 +78,7 @@ export class Transaction
             timestamp: this.timestamp.toISOString(),
             wallet: this.wallet.serialize(),
             reason: this.reason,
+            external_id: this.external_id,
         };
     }
 
