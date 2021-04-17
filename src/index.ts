@@ -8,6 +8,7 @@ import Boom from "@hapi/boom";
 import qs from "qs";
 import { Config } from "./config/Config";
 import { Session } from "./models/Session";
+import { User } from "./models/User";
 
 const server = new Hapi.Server({
     port: process.env.PORT,
@@ -103,6 +104,32 @@ const init = async () =>
         }
 
         return h.continue;
+    });
+
+    server.events.on("response", async request =>
+    {
+        if (!(request.response instanceof Boom.Boom))
+        {
+            const authenticatedUser = request.auth.credentials?.user as User | undefined;
+
+            await Database.pool
+                .query(
+                    `
+                    insert into "request_logs"
+                        ("remote_address", "method", "path", "timestamp", "status_code", "user")
+                    values
+                        ($1, $2, $3, $4, $5, $6)
+                    `,
+                    [
+                        request.info.remoteAddress,
+                        request.method.toUpperCase(),
+                        request.path,
+                        new Date().toISOString(),
+                        request.response.statusCode,
+                        authenticatedUser?.id ?? null,
+                    ],
+                );
+        }
     });
 
     server.route(routes);
