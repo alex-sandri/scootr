@@ -45,8 +45,31 @@ export class Export
 
     public static async create(user: User): Promise<Export>
     {
-        // TODO:
-        // Block user from creating an export if one is still in the process of being completed
+        const notCompletedExportsResult = await Database.pool
+            .query(
+                `
+                select count(*) as "count"
+                from "exports"
+                where
+                    "user" = $1
+                    and
+                    "completed_at" is null
+                limit 1
+                `,
+                [
+                    user.id,
+                ],
+            );
+
+        if (notCompletedExportsResult.rows[0].count > 0)
+        {
+            throw Boom.conflict(undefined, [
+                {
+                    field: "export",
+                    error: "Una richiesta di esportazione dati è ancora in corso",
+                },
+            ]);
+        }
 
         const result = await Database.pool
             .query(
