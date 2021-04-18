@@ -101,7 +101,6 @@ export class Ride
                     ("id", "user", "vehicle", "wallet", "start_time")
                 values
                     ($1, $2, $3, $4, $5)
-                returning *
                 `,
                 [
                     id,
