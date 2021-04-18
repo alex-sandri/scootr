@@ -1,7 +1,9 @@
 import Boom from "@hapi/boom";
 import Joi from "joi";
+import { Config } from "../config/Config";
 import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
+import { Utilities } from "../utilities/Utilities";
 import { ISerializedUser, User } from "./User";
 
 interface IDatabaseExport
@@ -43,7 +45,30 @@ export class Export
 
     public static async create(user: User): Promise<Export>
     {
-        // TODO
+        // TODO:
+        // Block user from creating an export if one is still in the process of being completed
+
+        const result = await Database.pool
+            .query(
+                `
+                insert into "exports"
+                    ("id", "user", "data")
+                values
+                    ($1, $2, $3)
+                returning *
+                `,
+                [
+                    Utilities.id(Config.ID_PREFIXES.EXPORT),
+                    user.id,
+                    {},
+                ],
+            )
+            .catch(() =>
+            {
+                throw Boom.badRequest();
+            });
+
+        return Export.deserialize(result.rows[0]);
     }
 
     public static async retrieve(id: string): Promise<Export>
