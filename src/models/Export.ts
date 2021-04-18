@@ -91,6 +91,11 @@ export class Export
                 throw Boom.badRequest();
             });
 
+        // TODO
+        // Add this job to a queue to process and store all user data
+        // Then send an email to the user to tell him the export is
+        // available to download
+
         return Export.deserialize(result.rows[0]);
     }
 
