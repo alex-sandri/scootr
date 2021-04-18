@@ -14,6 +14,7 @@ export class Config
         RIDE_WAYPOINT: "rwp",
         TRANSACTION: "trx",
         SUBSCRIPTION: "sub",
+        EXPORT: "exp",
     } as const;
 
     public static readonly ID_BYTE_LENGTH = 30;
