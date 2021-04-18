@@ -83,7 +83,12 @@ export default <ServerRoute[]>[
                 )
                 .catch(() =>
                 {
-                    throw Boom.badImplementation();
+                    throw Boom.badImplementation(undefined, [
+                        {
+                            field: "payment-method",
+                            error: "Impossibile aggiungere questo metodo di pagamento al momento"
+                        }
+                    ]);
                 });
 
             return h.response();
