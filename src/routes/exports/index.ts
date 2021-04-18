@@ -43,16 +43,16 @@ export default <ServerRoute[]>[
                 }),
             },
             response: {
-                schema: Joi.object({
-                    id: Schema.ID.EXPORT.required(),
-                }),
+                schema: Export.SCHEMA.OBJ,
             },
         },
         handler: async (request, h) =>
         {
             const authenticatedUser = request.auth.credentials.user as User;
 
-            throw Boom.notImplemented();
+            const dataExport = await Export.create(authenticatedUser);
+
+            return dataExport.serialize();
         },
     },
 ];
