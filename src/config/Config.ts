@@ -26,6 +26,13 @@ export class Config
      */
     public static readonly SESSION_DURATION = 60 * 60 * 24 * 30;
 
+    /**
+     * @default
+     * 
+     * 7 days
+     */
+     public static readonly EXPORT_EXPIRES_AFTER = 60 * 60 * 24 * 7;
+
     public static readonly RIDE_FIXED_COST = 1;
     public static readonly RIDE_COST_PER_MINUTE = 0.2;
     public static readonly WALLET_MIN_BALANCE_TO_START_RIDE = 5;
