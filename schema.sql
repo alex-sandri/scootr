@@ -261,6 +261,25 @@ create table "request_logs"
     check ("timestamp" <= current_timestamp)
 );
 
+create table "exports"
+(
+    "id" id not null,
+    "user" id not null,
+    "data" json not null,
+    "created_at" timestamp not null,
+    "completed_at" timestamp,
+    "expires_at" timestamp,
+
+    primary key ("id"),
+
+    foreign key ("user") references "users" on update cascade on delete cascade,
+
+    check ("id" like 'exp_%'),
+    check ("created_at" <= current_timestamp),
+    check ("completed_at" >= "created_at"),
+    check ("expires_at" > "completed_at")
+);
+
 -----------
 -- VIEWS --
 -----------
