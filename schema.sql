@@ -266,7 +266,7 @@ create table "exports"
     "id" id not null,
     "user" id not null,
     "data" json not null,
-    "created_at" timestamp not null,
+    "created_at" timestamp not null default current_timestamp,
     "completed_at" timestamp,
     "expires_at" timestamp,
 
