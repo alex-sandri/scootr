@@ -23,7 +23,14 @@ export default <ServerRoute[]>[
         {
             const authenticatedUser = request.auth.credentials.user as User;
 
-            throw Boom.notImplemented();
+            const dataExport = await Export.retrieve(request.params.id);
+
+            if (authenticatedUser.id !== dataExport.user.id)
+            {
+                throw Boom.forbidden();
+            }
+
+            return dataExport.serialize();
         },
     },
     {
