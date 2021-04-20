@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev src/index.ts",
-    "lint": "eslint src/**/*",
-    "lint:fix": "eslint src/**/* --fix"
+    "start": "ts-node-dev api/index.ts",
+    "lint": "eslint src/**/* api/index.ts",
+    "lint:fix": "eslint src/**/* api/index.ts --fix"
   },
   "keywords": [],
   "author": "",
