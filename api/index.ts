@@ -1,14 +1,14 @@
 import "dotenv/config";
 
 import Hapi from "@hapi/hapi";
-import routes from "./routes";
-import Database from "./utilities/Database";
+import routes from "../src/routes";
+import Database from "../src/utilities/Database";
 import { ValidationError } from "joi";
 import Boom from "@hapi/boom";
 import qs from "qs";
-import { Config } from "./config/Config";
-import { Session } from "./models/Session";
-import { User } from "./models/User";
+import { Config } from "../src/config/Config";
+import { Session } from "../src/models/Session";
+import { User } from "../src/models/User";
 
 const server = new Hapi.Server({
     port: process.env.PORT,
