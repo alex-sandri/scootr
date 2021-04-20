@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "start": "ts-node-dev api/index.ts",
     "lint": "eslint api/**/*",
     "lint:fix": "eslint api/**/* --fix"
