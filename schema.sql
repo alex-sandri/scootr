@@ -191,6 +191,8 @@ create table "old_users"
     "balance" numeric(10, 2) not null,
     "deleted_at" timestamp not null,
 
+    primary key ("fiscal_number"),
+
     check ("deleted_at" <= current_timestamp)
 );
 
