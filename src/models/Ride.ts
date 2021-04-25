@@ -95,13 +95,12 @@ export class Ride
             .query(
                 `
                 insert into "rides"
-                    ("id", "user", "vehicle", "wallet", "start_time")
+                    ("id", "vehicle", "wallet", "start_time")
                 values
-                    ($1, $2, $3, $4, $5)
+                    ($1, $2, $4, $5)
                 `,
                 [
                     id,
-                    user.id,
                     data.vehicle,
                     data.wallet,
                     startTime.toISOString(),
@@ -145,7 +144,16 @@ export class Ride
     {
         const result = await Database.pool
             .query(
-                `select * from "rides" where "user" = $1`,
+                `
+                select "r".*
+                from
+                    "rides" as "r"
+                    inner join
+                    "wallets" as "w"
+                    on "w"."id" = "r"."wallet"
+                where
+                    "w"."user" = $1
+                `,
                 [ user.id ],
             );
 
@@ -157,10 +165,14 @@ export class Ride
         const result = await Database.pool
             .query(
                 `
-                select *
-                from "rides"
+                select "r".*
+                from
+                    "rides" as "r"
+                    inner join
+                    "wallets" as "w"
+                    on "w"."id" = "r"."wallet"
                 where
-                    "user" = $1
+                    "w"."user" = $1
                     and
                     "end_time" is null
                 limit 1
@@ -331,7 +343,6 @@ export class Ride
     public static readonly SCHEMA = {
         OBJ: Joi.object({
             id: Schema.ID.RIDE.required(),
-            user: User.SCHEMA.OBJ.required(),
             vehicle: Vehicle.SCHEMA.OBJ.required(),
             wallet: Wallet.SCHEMA.OBJ.required(),
             start_time: Schema.DATETIME.required(),
