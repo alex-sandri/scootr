@@ -131,7 +131,6 @@ create table "vehicles"
 create table "rides"
 (
     "id" id not null,
-    "user" id not null,
     "vehicle" id not null,
     "wallet" id not null,
     "start_time" timestamp not null,
@@ -139,7 +138,6 @@ create table "rides"
 
     primary key ("id"),
 
-    foreign key ("user") references "users" on update cascade on delete cascade,
     foreign key ("vehicle") references "vehicles" on update cascade on delete cascade,
     foreign key ("wallet") references "wallets" on update cascade on delete cascade,
 
