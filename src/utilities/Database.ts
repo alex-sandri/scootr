@@ -6,7 +6,17 @@ export default class Database
 
     public static init(): void
     {
-        Database.pool = new Pool({ connectionString: process.env.DATABASE_URL });
+        Database.pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            /**
+             * TODO:
+             * 
+             * Find a way to avoid this in production
+             */
+            ssl: {
+                rejectUnauthorized: false,
+            },
+        });
 
         types.setTypeParser(types.builtins.INT8, BigInt);
 
