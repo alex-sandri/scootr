@@ -27,7 +27,7 @@ export default <ServerRoute[]>[
 
             const ride = await Ride.retrieve(request.params.id);
 
-            if (authenticatedUser.id !== ride.user.id)
+            if (authenticatedUser.id !== ride.wallet.user.id)
             {
                 throw Boom.forbidden();
             }
@@ -54,7 +54,7 @@ export default <ServerRoute[]>[
 
             const ride = await Ride.retrieve(request.params.id);
 
-            if (authenticatedUser.id !== ride.user.id)
+            if (authenticatedUser.id !== ride.wallet.user.id)
             {
                 throw Boom.forbidden();
             }
@@ -162,7 +162,7 @@ export default <ServerRoute[]>[
 
             const ride = await Ride.retrieve(request.params.id);
 
-            if (authenticatedUser.id !== ride.user.id)
+            if (authenticatedUser.id !== ride.wallet.user.id)
             {
                 throw Boom.forbidden();
             }

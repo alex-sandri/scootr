@@ -6,14 +6,13 @@ import { Config } from "../config/Config";
 import { Schema } from "../config/Schema";
 import Database from "../utilities/Database";
 import { Utilities } from "../utilities/Utilities";
-import { ISerializedUser, User } from "./User";
+import { User } from "./User";
 import { ISerializedVehicle, Vehicle } from "./Vehicle";
 import { ISerializedWallet, Wallet } from "./Wallet";
 
 interface IDatabaseRide
 {
     id: string,
-    user: string,
     vehicle: string,
     wallet: string,
     start_time: Date,
@@ -29,7 +28,6 @@ interface ICreateRide
 export interface ISerializedRide
 {
     id: string,
-    user: ISerializedUser,
     vehicle: ISerializedVehicle,
     wallet: ISerializedWallet,
     start_time: string,
@@ -42,7 +40,6 @@ export class Ride
     private constructor
     (
         public readonly id: string,
-        public readonly user: User,
         public readonly vehicle: Vehicle,
         public readonly wallet: Wallet,
         public readonly start_time: Date,
@@ -117,7 +114,6 @@ export class Ride
 
         return Ride.deserialize({
             id,
-            user: user.id,
             vehicle: data.vehicle,
             wallet: data.wallet,
             start_time: startTime,
@@ -285,7 +281,6 @@ export class Ride
     {
         return {
             id: this.id,
-            user: this.user.serialize(),
             vehicle: this.vehicle.serialize(),
             wallet: this.wallet.serialize(),
             start_time: this.start_time.toISOString(),
@@ -296,7 +291,6 @@ export class Ride
 
     private static async deserialize(data: IDatabaseRide): Promise<Ride>
     {
-        const user = await User.retrieve(data.user);
         const vehicle = await Vehicle.retrieve(data.vehicle);
         const wallet = await Wallet.retrieve(data.wallet);
 
@@ -322,7 +316,6 @@ export class Ride
 
         return new Ride(
             data.id,
-            user,
             vehicle,
             wallet,
             data.start_time,
