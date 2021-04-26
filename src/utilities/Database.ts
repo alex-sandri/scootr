@@ -1,4 +1,5 @@
 import { Pool, types } from "pg";
+import { Config } from "../config/Config";
 
 export default class Database
 {
@@ -13,9 +14,9 @@ export default class Database
              * 
              * Find a way to avoid this in production
              */
-            ssl: {
-                rejectUnauthorized: false,
-            },
+            ssl: Config.IS_PRODUCTION
+                ? { rejectUnauthorized: false }
+                : undefined,
         });
 
         types.setTypeParser(types.builtins.INT8, BigInt);
