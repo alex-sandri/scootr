@@ -150,7 +150,7 @@ export default <ServerRoute[]>[
                     id: Schema.ID.WALLET.required(),
                 }),
                 payload: Joi.object({
-                    amount: Schema.MONEY.min(1).required(),
+                    amount: Schema.MONEY.min(Config.MIN_CHARGE_AMOUNT).required(),
                     is_subscription: Schema.BOOLEAN.required(),
                 }),
             },

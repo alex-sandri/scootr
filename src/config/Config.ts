@@ -31,7 +31,9 @@ export class Config
      * 
      * 7 days
      */
-     public static readonly EXPORT_EXPIRES_AFTER = 60 * 60 * 24 * 7;
+    public static readonly EXPORT_EXPIRES_AFTER = 60 * 60 * 24 * 7;
+
+    public static readonly MIN_CHARGE_AMOUNT = 1;
 
     public static readonly RIDE_FIXED_COST = 1;
     public static readonly RIDE_COST_PER_MINUTE = 0.2;
