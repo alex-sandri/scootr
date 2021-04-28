@@ -243,7 +243,8 @@ create table "subscriptions"
 
     foreign key ("wallet") references "wallets" on update cascade on delete cascade,
 
-    check ("id" like 'sub_%')
+    check ("id" like 'sub_%'),
+    check ("amount" > 0)
 );
 
 create table "request_logs"
