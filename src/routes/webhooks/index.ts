@@ -263,7 +263,7 @@ export default <ServerRoute[]>[
                                 wallet.id,
                                 isSubscription
                                     ? "subscription"
-                                    : "credit",
+                                    : "top-up",
                                 paymentIntent.id,
                             ],
                         )

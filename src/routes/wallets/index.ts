@@ -218,7 +218,7 @@ export default <ServerRoute[]>[
                             price_data: {
                                 unit_amount: payload.amount,
                                 currency: "eur",
-                                product: process.env.STRIPE_RECURRING_CREDIT_PRODUCT_ID ?? "",
+                                product: process.env.STRIPE_RECURRING_TOPUP_PRODUCT_ID ?? "",
                                 recurring: {
                                     interval: "month",
                                 },

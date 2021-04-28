@@ -314,5 +314,5 @@ insert into "user_types" values
 
 insert into "transaction_reasons" values
     ('ride'),
-    ('credit')
+    ('top-up')
     ('subscription');
