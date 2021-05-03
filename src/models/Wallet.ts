@@ -353,7 +353,7 @@ export class Wallet
         return new Wallet(
             data.id,
             data.name,
-            balanceResult.rows[0].balance,
+            parseFloat(balanceResult.rows[0].balance),
             user,
             data.stripe_customer_id,
         );
