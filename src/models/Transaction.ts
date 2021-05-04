@@ -88,7 +88,7 @@ export class Transaction
 
         return new Transaction(
             data.id,
-            data.amount,
+            parseFloat(data.amount.toString()),
             data.timestamp,
             wallet,
             data.reason,
