@@ -24,6 +24,8 @@ create domain "email_address" as varchar(320);
 
 create domain "fiscal_number" as char(16) check (value = upper(value));
 
+create domain "location" as geography(point, 4326); -- https://epsg.io/4326
+
 ------------
 -- TABLES --
 ------------
@@ -119,7 +121,7 @@ create table "vehicles"
 (
     "id" id not null,
     "battery_level" int not null,
-    "location" geography(point, 4326) not null, -- https://epsg.io/4326
+    "location" location not null,
     "available" boolean not null default true,
 
     primary key ("id"),
@@ -163,7 +165,7 @@ create table "ride_waypoints"
 (
     "id" id not null,
     "ride" id not null,
-    "location" geography(point, 4326) not null,
+    "location" location not null,
     "timestamp" timestamp not null,
 
     primary key ("id"),
@@ -279,6 +281,16 @@ create table "exports"
     check ("created_at" <= current_timestamp),
     check ("completed_at" >= "created_at"),
     check ("expires_at" > "completed_at")
+);
+
+create table "hubs"
+(
+    "id" id not null,
+    "location" location not null,
+
+    primary key ("id"),
+
+    check ("id" like 'hub_%'),
 );
 
 -----------
