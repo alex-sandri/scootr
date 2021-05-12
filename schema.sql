@@ -290,7 +290,7 @@ create table "hubs"
 
     primary key ("id"),
 
-    check ("id" like 'hub_%'),
+    check ("id" like 'hub_%')
 );
 
 -----------
