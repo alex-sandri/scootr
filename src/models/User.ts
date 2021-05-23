@@ -103,6 +103,8 @@ export class User
                 throw Boom.badImplementation();
             });
 
+        console.log(balanceResult.rows);
+
         await client
             .query(
                 `
