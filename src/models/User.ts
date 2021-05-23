@@ -103,7 +103,11 @@ export class User
                 throw Boom.badImplementation();
             });
 
-        console.log(balanceResult.rows);
+        console.log([
+            this.fiscal_number,
+            parseFloat(balanceResult.rows[0].balance),
+            new Date().toISOString(),
+        ],);
 
         await client
             .query(
