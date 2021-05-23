@@ -103,24 +103,17 @@ export class User
                 throw Boom.badImplementation();
             });
 
-        console.log([
-            this.fiscal_number,
-            parseFloat(balanceResult.rows[0].balance),
-            new Date().toISOString(),
-        ],);
-
         await client
             .query(
                 `
                 insert into "old_users"
-                    ("fiscal_number", "balance", "deleted_at")
+                    ("fiscal_number", "balance")
                 values
-                    ($1, $2, $3)
+                    ($1, $2)
                 `,
                 [
                     this.fiscal_number,
                     parseFloat(balanceResult.rows[0].balance),
-                    new Date().toISOString(),
                 ],
             )
             .catch(async () =>

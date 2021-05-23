@@ -189,11 +189,9 @@ create table "old_users"
 (
     "fiscal_number" fiscal_number not null,
     "balance" numeric(10, 2) not null,
-    "deleted_at" timestamp not null,
+    "deleted_at" generated always as current_timestamp stored,
 
-    primary key ("fiscal_number"),
-
-    check ("deleted_at" <= current_timestamp)
+    primary key ("fiscal_number")
 );
 
 create table "transaction_reasons"
