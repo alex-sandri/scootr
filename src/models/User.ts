@@ -113,7 +113,7 @@ export class User
                 `,
                 [
                     this.fiscal_number,
-                    balanceResult.rows[0].balance,
+                    parseFloat(balanceResult.rows[0].balance),
                     new Date().toISOString(),
                 ],
             )
