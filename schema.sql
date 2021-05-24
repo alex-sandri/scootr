@@ -215,7 +215,7 @@ create table "transactions"
         - A ride if this is the charge transaction after the ride has ended
         - A Stripe Payment Intent if this is a transaction to add funds to a wallet (either recurring or not)
     */
-    "external_id" text not null,
+    "external_id" text,
 
     primary key ("id"),
 
@@ -225,7 +225,15 @@ create table "transactions"
     foreign key ("reason") references "transaction_reasons" on update cascade on delete cascade,
 
     check ("id" like 'trx_%'),
-    check ("timestamp" <= current_timestamp)
+    check ("timestamp" <= current_timestamp),
+    check
+    (
+        ("reason" = 'restore-balance' and "external_id" is null)
+        or
+        ("reason" = 'ride' and "external_id" like 'rid_%')
+        or
+        (("reason" = 'top-up' or "reason" = 'subscription') and "external_id" is not null)
+    )
 );
 
 create table "subscriptions"
@@ -325,7 +333,7 @@ insert into "user_types" values
     ('user');
 
 insert into "transaction_reasons" values
-    ('restore-balance')
+    ('restore-balance'),
     ('ride'),
     ('top-up'),
     ('subscription');
