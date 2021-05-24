@@ -107,7 +107,7 @@ export class Transaction
             timestamp: Schema.DATETIME.required(),
             wallet: Wallet.SCHEMA.OBJ.required(),
             reason: Schema.STRING.required(),
-            external_id: Schema.STRING.allow(null).required(),
+            external_id: Schema.NULLABLE(Schema.STRING).required(),
         }),
     } as const;
 }

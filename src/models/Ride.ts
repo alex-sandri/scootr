@@ -346,8 +346,8 @@ export class Ride
             vehicle: Vehicle.SCHEMA.OBJ.required(),
             wallet: Wallet.SCHEMA.OBJ.required(),
             start_time: Schema.DATETIME.required(),
-            end_time: Schema.DATETIME.allow(null).required(),
-            amount: Schema.MONEY.positive().allow(null).required(),
+            end_time: Schema.NULLABLE(Schema.DATETIME).required(),
+            amount: Schema.NULLABLE(Schema.MONEY.positive()).required(),
         }),
         CREATE: Joi.object({
             vehicle: Schema.ID.VEHICLE.required(),

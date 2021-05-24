@@ -101,7 +101,7 @@ export default <ServerRoute[]>[
                 }),
             },
             response: {
-                schema: Ride.SCHEMA.OBJ.allow(null),
+                schema: Schema.NULLABLE(Ride.SCHEMA.OBJ),
             },
         },
         handler: async (request, h) =>

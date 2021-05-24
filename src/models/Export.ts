@@ -159,8 +159,8 @@ export class Export
             user: User.SCHEMA.OBJ.required(),
             data: Joi.object().required(),
             created_at: Schema.DATETIME.required(),
-            completed_at: Schema.DATETIME.allow(null).required(),
-            expires_at: Schema.DATETIME.allow(null).required(),
+            completed_at: Schema.NULLABLE(Schema.DATETIME).required(),
+            expires_at: Schema.NULLABLE(Schema.DATETIME).required(),
         }),
     } as const;
 }

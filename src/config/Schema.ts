@@ -48,4 +48,6 @@ export class Schema
     public static readonly ARRAY = (type: BaseJoi.SchemaLikeWithoutArray) => Joi.array().items(type);
 
     public static readonly BOOLEAN = Joi.boolean();
+
+    public static readonly NULLABLE = (type: BaseJoi.Schema) => type.allow(null);
 }
