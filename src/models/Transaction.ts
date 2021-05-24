@@ -10,7 +10,7 @@ interface IDatabaseTransaction
     timestamp: Date,
     wallet: string,
     reason: string,
-    external_id: string,
+    external_id: string | null,
 }
 
 export interface ISerializedTransaction
@@ -20,7 +20,7 @@ export interface ISerializedTransaction
     timestamp: string,
     wallet: ISerializedWallet,
     reason: string,
-    external_id: string,
+    external_id: string | null,
 }
 
 export class Transaction
@@ -32,7 +32,7 @@ export class Transaction
         public readonly timestamp: Date,
         public readonly wallet: Wallet,
         public readonly reason: string,
-        public readonly external_id: string,
+        public readonly external_id: string | null,
     )
     {}
 
@@ -107,7 +107,7 @@ export class Transaction
             timestamp: Schema.DATETIME.required(),
             wallet: Wallet.SCHEMA.OBJ.required(),
             reason: Schema.STRING.required(),
-            external_id: Schema.STRING.required(),
+            external_id: Schema.STRING.allow(null).required(),
         }),
     } as const;
 }
