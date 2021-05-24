@@ -335,5 +335,5 @@ insert into "user_types" values
 insert into "transaction_reasons" values
     ('restore-balance'),
     ('ride'),
-    ('top-up'),
-    ('subscription');
+    ('subscription'),
+    ('top-up');
