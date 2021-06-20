@@ -97,7 +97,7 @@ export class Ride
                 insert into "rides"
                     ("id", "vehicle", "wallet", "start_time")
                 values
-                    ($1, $2, $4, $5)
+                    ($1, $2, $3, $4)
                 `,
                 [
                     id,
